@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Custom Kicks Order Form</title>
+<link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsSAAALEgHS3X78AAACz0lEQVRYhcWWQVbbMBCGP/rYk56gvgHcAHejLd5rUXOCwg3oCXBPULPQGmfrlXOChhOQ3CA5gbvQCMZCtgNtYd7zSySP9f+af2ako77v+Uj79KHowPF7AxrnamABVK213dF7SmCcK4Ffaurun0lgnMuMc9nE+zOgiqa7vyJgnOuNc7kMa+DROLeRMMdWAydqvG2trQ/OAdldhdevaK3dAXsgB7rW2tw414l7F31bAacJQq+qggrIgB1wJnNrmQt2DtSttbUCL4DvifVqeH0VnMpzYZy7FAJnApSLT6fAswAU2bK1djNLQBKnBG7k9wq/42/i0ggJgA3wIyys3mvd9TyzBASsxOtcylwuQLV2FOAbRT6l+wsCs31AotDgk+8qBh75pgDuR14vW2uLMEhGwDi3wGtZttauhUSNT8A58Iy07sEaPRiTYCG/v41z1621FVCM+KYAtO5L4GKMQLIMRc8CWAG3qr4nLaH7deTyIP1jmoBxbg084usaniMyBV4yrPelRE7vfmecayRHgHEJrgBaa7s5YAFP9fnMOLeJ5sKGnnzfdBpK08nwTSg8qXofs89BioM6oQAWAnQ+7T1qW3yz6nQejBIQ0FKAD93dHt8Z1wJ2q95VkhMDe0FAEqQCvhwApondtdaWap088u9SizwRkObTMB7ilSzS4fXXN5sHJHGVDQi01q5J2LEC73jZu7f4/t4E3WRnGnwP5HF983xkB/JJCxFoIvAtvu8PupY6F+bAYRiBbpSAaK7D/pBaVMA7hrqXqdDKeaD9kuEH3wnjHl8kwIsE+GUcIWV5NJ4kkKnxKrpQhBZ7H4H/nDmWtf77eM2YwOBDCXW4ZjcMEw58ucUZH1uu/o/uHnwS6tI7wR/BY/6DWp8wndDdHIEaX2pz3e7ywNvQAviqpjZT/kd93+vySnW/Fb4kJ0P5VhuchpJwGf783+Eb0H8BDvYH0P4r7lyV4jEAAAAASUVORK5CYII=">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    /* Original warm paper base, brought back as requested */
+    --paper:#F4EFE3; --ink:#201D1A; --sand:#E8DEC7; --line:#C9BBA0;
+    --muted:#4a463f; --faint:#6b6656;
+    /* Brand teal palette, layered on top as the accent system throughout */
+    --wash:#B4D9E3; --panel:#D7E9EB;
+    --teal-mid:#43A3A3; --teal-light:#77C7C9; --teal-dark:#125C60;
+    --red:var(--teal-dark); --teal:var(--teal-mid); --danger:var(--teal-dark);
+    --radius:2px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:transparent;}
+  body{font-family:'IBM Plex Sans', sans-serif; color:var(--ink); background:var(--paper); line-height:1.5;}
+  .wrap{max-width:760px;margin:0 auto;padding:32px 20px 80px;}
+
+  .checker{
+    height:14px; width:100%;
+    background-image:
+      linear-gradient(45deg, rgba(18,92,96,0.28) 25%, transparent 25%, transparent 75%, rgba(18,92,96,0.28) 75%),
+      linear-gradient(45deg, rgba(18,92,96,0.28) 25%, transparent 25%, transparent 75%, rgba(18,92,96,0.28) 75%);
+    background-size:14px 14px; background-position:0 0, 7px 7px; background-color:var(--paper);
+  }
+
+  .eyebrow{font-family:'IBM Plex Mono', monospace; font-size:14px; letter-spacing:2px; text-transform:uppercase; color:var(--red); margin:0 0 8px; font-weight:700;}
+  h1.title{font-family:'Archivo Black', sans-serif; font-size:clamp(38px, 7vw, 54px); line-height:1.02; margin:0 0 12px;}
+  .subtitle{max-width:56ch; color:var(--muted); font-size:18px; margin:0 0 24px; font-weight:500;}
+  .hero{padding:36px 0 24px;}
+  .logo{width:52px; height:52px; display:block; margin-bottom:14px;}
+  .shoe-icon{width:100%; max-width:240px; height:88px; margin-bottom:6px;}
+  .shoe-icon svg{width:100%; height:100%; overflow:visible;}
+
+  .progress{display:flex; gap:8px; margin:0 0 28px;}
+  .progress .dot{flex:1; height:7px; border-radius:4px; background:var(--line);}
+  .progress .dot.done{background:var(--teal);}
+  .progress .dot.active{background:var(--teal-light);}
+
+  .step{position:relative; background:var(--sand); border:1px dashed var(--line); border-radius:var(--radius); padding:28px 26px 30px; margin:22px 0;}
+  .step::before{content:""; position:absolute; top:14px; left:-7px; width:14px; height:14px; background:var(--paper); border:1px dashed var(--line); border-radius:50%;}
+  .step-num{font-family:'IBM Plex Mono', monospace; font-size:13px; letter-spacing:2px; color:var(--teal); font-weight:700; margin:0 0 6px; text-transform:uppercase;}
+  .step h2{font-family:'Archivo Black', sans-serif; font-size:28px; margin:0 0 14px; letter-spacing:0.2px;}
+  .step p{margin:0 0 14px; color:var(--muted); font-size:16px;}
+
+  .howto{background:var(--paper); border:1px solid var(--line); border-radius:var(--radius); padding:20px 22px; margin:14px 0;}
+  .howto ol{margin:0; padding-left:20px;}
+  .howto li{margin-bottom:12px; font-size:17px; color:var(--ink); font-weight:500; line-height:1.4;}
+  .howto li:last-child{margin-bottom:0;}
+  .howto .callout{background:var(--sand); border-radius:var(--radius); padding:2px 6px; font-weight:600;}
+  .tap-diagram{background:var(--panel); border:1px solid var(--wash); border-radius:var(--radius); padding:14px; margin-top:10px;}
+  .tap-caption{margin:10px 0 0; font-size:16px; font-weight:600; color:var(--ink); text-align:center;}
+
+  .shoe-grid{display:grid; grid-template-columns:repeat(3, 1fr); gap:12px;}
+  @media (max-width:600px){ .shoe-grid{grid-template-columns:1fr;} }
+  .shoe-card{display:flex; flex-direction:column; align-items:flex-start; gap:8px; background:var(--paper); border:1px solid var(--line); border-radius:var(--radius); padding:16px; text-decoration:none; color:var(--ink); transition:transform 0.12s ease, border-color 0.12s ease; cursor:pointer;}
+  .shoe-card:hover{transform:translateY(-2px); border-color:var(--teal-light);}
+  .shoe-card .name{font-weight:700; font-size:17px;}
+  .shoe-card .go{font-family:'IBM Plex Mono', monospace; font-size:13px; font-weight:700; color:var(--red);}
+
+  .status-box{
+    display:flex; align-items:center; gap:12px; background:var(--paper); border:1px solid var(--line);
+    border-radius:var(--radius); padding:16px; margin-top:14px;
+  }
+  .status-box .icon{width:22px; height:22px; flex:none; border-radius:50%; border:2px solid var(--line); display:flex; align-items:center; justify-content:center; font-size:13px;}
+  .status-box.waiting .icon{border-color:var(--teal-light); color:var(--teal-light);}
+  .status-box.done{border-color:var(--teal);}
+  .status-box.done .icon{background:var(--teal); border-color:var(--teal); color:var(--paper);}
+  .status-box .text{font-size:14.5px; color:var(--muted);}
+  .status-box .text strong{display:block; font-size:15px; color:var(--ink);}
+
+
+  .btn{font-family:'IBM Plex Mono', monospace; font-size:13px; letter-spacing:0.5px; padding:10px 16px; border:1px solid var(--ink); background:var(--paper); border-radius:var(--radius); cursor:pointer;}
+  .btn:hover{background:var(--sand);}
+  .btn.primary{background:var(--ink); color:var(--paper);}
+  .btn.primary:hover{background:#33302a;}
+
+  input[type=text], input[type=url], textarea, select{
+    width:100%; font-family:'IBM Plex Sans', sans-serif; font-size:15px; padding:10px 12px;
+    background:var(--paper); border:1px solid var(--line); border-radius:var(--radius); color:var(--ink);
+  }
+  input:focus{ outline:2px solid var(--teal); outline-offset:1px; }
+  label{display:block; font-family:'IBM Plex Mono', monospace; font-size:12px; letter-spacing:0.5px; text-transform:uppercase; color:var(--muted); margin:16px 0 6px;}
+  label.first{margin-top:0;}
+  .two-col{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  @media (max-width:520px){ .two-col{grid-template-columns:1fr;} }
+  .hint{font-size:15px; color:var(--faint); margin-top:4px; font-weight:500;}
+
+  .disclaimer{background:var(--paper); border:1px solid var(--line); border-radius:var(--radius); padding:14px 16px; margin:22px 0 16px; font-size:14px; color:var(--muted); display:flex; gap:10px; align-items:flex-start;}
+  .disclaimer input{width:auto; margin-top:3px; flex:none; accent-color:var(--teal-dark);}
+
+  button.submit{font-family:'IBM Plex Mono', monospace; letter-spacing:1px; text-transform:uppercase; font-size:16px; font-weight:700; background:var(--red); color:var(--paper); border:none; border-radius:var(--radius); padding:18px 22px; cursor:pointer; width:100%;}
+  button.submit:disabled{background:var(--wash); color:var(--teal-dark); cursor:not-allowed;}
+  button.submit:not(:disabled):hover{background:#0F4E52;}
+
+  .error{color:var(--danger); font-size:13px; margin-top:6px;}
+  .status{font-size:13px; color:var(--faint); margin-top:8px;}
+
+  .confirm{text-align:center; padding:40px 20px; position:relative; overflow:visible;}
+  .confirm .tag{display:inline-block; background:var(--sand); border:1px dashed var(--line); border-radius:var(--radius); padding:20px 28px; margin:20px 0;}
+  .confirm .code{font-family:'IBM Plex Mono', monospace; font-size:14px; letter-spacing:1px; color:var(--teal); font-weight:600;}
+
+  @keyframes pop-in{
+    0%{ transform:scale(0); opacity:0; }
+    60%{ transform:scale(1.15); opacity:1; }
+    100%{ transform:scale(1); opacity:1; }
+  }
+  .confirm-badge{
+    width:84px; height:84px; border-radius:50%; background:var(--teal-dark);
+    display:flex; align-items:center; justify-content:center; margin:0 auto 8px;
+    animation:pop-in 0.5s cubic-bezier(.34,1.56,.64,1);
+  }
+  .confirm-badge svg{ width:42px; height:42px; }
+
+  @keyframes confetti-fall{
+    0%{ transform:translateY(-10px) rotate(0deg); opacity:1; }
+    100%{ transform:translateY(260px) rotate(360deg); opacity:0; }
+  }
+  .confetti-wrap{ position:relative; height:0; overflow:visible; pointer-events:none; }
+  .confetti-piece{ position:absolute; top:0; width:9px; height:9px; animation:confetti-fall 1.7s ease-in forwards; }
+
+  .next-steps{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin:26px 0 6px; text-align:left; }
+  .next-step{
+    flex:1; min-width:160px; max-width:200px; background:var(--sand); border:1px solid var(--line);
+    border-radius:var(--radius); padding:14px 16px;
+  }
+  .next-step .num{
+    display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px;
+    border-radius:50%; background:var(--teal-dark); color:var(--paper); font-family:'IBM Plex Mono', monospace;
+    font-size:12px; font-weight:700; margin-bottom:8px;
+  }
+  .next-step p{ margin:0; font-size:14px; color:var(--ink); font-weight:500; line-height:1.35; }
+
+  .copy-code-btn{
+    font-family:'IBM Plex Mono', monospace; font-size:11px; letter-spacing:0.5px; text-transform:uppercase;
+    background:none; border:1px solid var(--teal-dark); color:var(--teal-dark); border-radius:var(--radius);
+    padding:4px 10px; margin-left:10px; cursor:pointer; vertical-align:middle;
+  }
+  .copy-code-btn:hover{ background:var(--teal-dark); color:var(--paper); }
+
+  .team-toggle{text-align:center; margin-top:40px;}
+  .team-toggle button{background:none; border:none; font-family:'IBM Plex Mono', monospace; font-size:12px; letter-spacing:1px; text-transform:uppercase; color:var(--faint); cursor:pointer; text-decoration:underline;}
+  .team-panel{margin-top:20px; border:1px solid var(--line); border-radius:var(--radius); background:var(--paper); padding:20px;}
+  .team-panel h3{font-family:'Archivo Black', sans-serif; font-size:16px; margin:0 0 4px;}
+  table.master{width:100%; border-collapse:collapse; font-size:13px; margin-top:12px;}
+  table.master th, table.master td{border:1px solid var(--line); padding:6px 8px; text-align:left; vertical-align:top;}
+  table.master th{background:var(--sand); font-family:'IBM Plex Mono', monospace; font-size:11px; text-transform:uppercase; letter-spacing:0.5px;}
+  .toolbar{display:flex; gap:10px; flex-wrap:wrap; margin-top:10px;}
+  .env-warning{background:#125C60; color:#F4EFE3; padding:14px 20px; font-size:14px; text-align:center; font-weight:600;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hero">
+    <img class="logo" src="data:image/png;base64,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" alt="Visit Anaheim logo">
+    <p class="eyebrow">Visit Anaheim &times; Vans</p>
+    <h1 class="title">Design Your Kicks!</h1>
+    <p class="subtitle">Pick a shoe, make it wildly, unmistakably yours on vans.com, then tell us where to send it. No checkout, no hassle &mdash; we're placing one big order with Vans for the whole crew. Just design and have fun.</p>
+  </div>
+
+  <div class="checker"></div>
+
+  <div id="formView">
+
+    <div class="progress">
+      <div class="dot active" id="dot1"></div>
+      <div class="dot" id="dot2"></div>
+    </div>
+
+    <div class="step">
+      <p class="step-num">Step 01 &middot; The Fun Part</p>
+      <h2>Design Your Shoe!</h2>
+
+      <div class="howto">
+        <ol>
+          <li>Tap a shoe below and start creating &mdash; Vans' design tool pops up right alongside this one.</li>
+          <li>Go wild with colors, materials, and laces. Make it unmistakably <em>you</em>.</li>
+          <li>Loving what you see? On the Vans page: tap <strong>&#8942;</strong>, then <strong>Share</strong>, then <strong>Copy Link</strong>.</li>
+        </ol>
+        <div class="tap-diagram">
+          <svg viewBox="0 0 300 70" width="100%" height="auto" role="img" aria-label="Tap the three dots, then Share, then Copy Link">
+            <rect x="1" y="1" width="298" height="68" rx="8" fill="var(--paper)" stroke="var(--wash)"/>
+
+            <circle cx="45" cy="34" r="17" fill="var(--panel)"/>
+            <text x="45" y="40" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="17" font-weight="700" fill="var(--teal-dark)">&#8942;</text>
+
+            <path d="M66,34 L96,34" fill="none" stroke="var(--teal-light)" stroke-width="3" stroke-linecap="round" marker-end="url(#tapArrow)"/>
+
+            <rect x="100" y="20" width="66" height="28" rx="14" fill="var(--teal-mid)"/>
+            <text x="133" y="38" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="12" font-weight="600" fill="var(--paper)">Share</text>
+
+            <path d="M170,34 L200,34" fill="none" stroke="var(--teal-light)" stroke-width="3" stroke-linecap="round" marker-end="url(#tapArrow)"/>
+
+            <rect x="204" y="20" width="86" height="28" rx="14" fill="var(--teal-dark)"/>
+            <text x="247" y="38" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="12" font-weight="600" fill="var(--paper)">Copy Link</text>
+
+            <defs><marker id="tapArrow" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="var(--teal-light)"/></marker></defs>
+          </svg>
+          <p class="tap-caption">Tap <strong>&#8942;</strong>, then <strong>Share</strong>, then <strong>Copy Link</strong>.</p>
+        </div>
+        <p class="hint" style="margin-top:8px;">A "Link Copied" message will briefly pop up &mdash; that means it worked.</p>
+        <p class="hint" style="margin-top:8px;">The Share panel also has fields for emailing the design to someone &mdash; you can ignore all of that (name, email, the "I'm not a robot" box). You only need <strong>Copy Link</strong>.</p>
+        <p class="hint" style="margin-top:12px;">Then come back to this tab, tap the box below, and press <strong>Cmd+V</strong> (or tap and hold to <strong>Paste</strong> on iPad).</p>
+        <p class="hint" style="margin-top:8px;">Stuck on any of this? No worries at all &mdash; just wave down a Visit Anaheim team member and they'll help you out.</p>
+      </div>
+
+      <div class="shoe-grid">
+        <a class="shoe-card" data-url="https://www.vans.com/en-us/customizer/slip-on-classic">
+          <span class="shoe-icon"><svg viewBox="0 0 120 60" fill="none" stroke="var(--teal-dark)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M10,44 C10,31 21,23 33,21 L72,9 C85,5 97,7 103,16 C109,25 106,35 97,41 L84,47 C63,55 33,55 17,49 C11,47 10,46 10,44 Z"/>
+            <path d="M52,20 L60,30 M62,16 L70,26" stroke-width="4.5"/>
+          </svg></span>
+          <span class="name">Slip-On Classic</span><span class="go">Start designing &rarr;</span>
+        </a>
+        <a class="shoe-card" data-url="https://www.vans.com/en-us/customizer/old-skool-classic">
+          <span class="shoe-icon"><svg viewBox="0 0 120 60" fill="none" stroke="var(--teal-dark)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M10,44 C10,31 21,23 33,21 L72,9 C85,5 97,7 103,16 C109,25 106,35 97,41 L84,47 C63,55 33,55 17,49 C11,47 10,46 10,44 Z"/>
+            <path d="M20,41 C36,24 54,24 68,34 C78,41 90,34 98,22" stroke="var(--teal-light)" stroke-width="8"/>
+          </svg></span>
+          <span class="name">Old Skool Classic</span><span class="go">Start designing &rarr;</span>
+        </a>
+        <a class="shoe-card" data-url="https://www.vans.com/en-us/customizer/authentic-classic">
+          <span class="shoe-icon"><svg viewBox="0 0 120 60" fill="none" stroke="var(--teal-dark)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M10,44 C10,31 21,23 33,21 L72,9 C85,5 97,7 103,16 C109,25 106,35 97,41 L84,47 C63,55 33,55 17,49 C11,47 10,46 10,44 Z"/>
+            <path d="M40,32 L56,16 M46,38 L62,22 M52,44 L68,28" stroke-width="4.5"/>
+          </svg></span>
+          <span class="name">Authentic Classic</span><span class="go">Start designing &rarr;</span>
+        </a>
+      </div>
+
+      <div class="status-box waiting" id="linkStatusBox" style="display:none;">
+        <div class="icon" id="linkStatusIcon">&hellip;</div>
+        <div class="text" id="linkStatusText"><strong>Hanging tight while you create...</strong>Once you're done on Vans, come back here and paste your link below.</div>
+      </div>
+      <label class="first" for="designUrl" style="margin-top:16px; font-size:15px;">Paste your design link here</label>
+      <input type="url" id="designUrl" placeholder="Press Cmd+V (or tap and hold to Paste)" style="border:2px solid var(--teal-light); font-size:17px; padding:14px 14px;">
+      <div class="error" id="err-designUrl"></div>
+    </div>
+
+    <div class="step">
+      <p class="step-num">Step 02 &middot; The Home Stretch</p>
+      <h2>Tell Us Where To Ship It!</h2>
+      <p>Almost there &mdash; just the boring-but-important stuff so your kicks find you.</p>
+
+      <label class="first" for="clientName">Client name</label>
+      <input type="text" id="clientName" autocomplete="name">
+      <div class="error" id="err-clientName"></div>
+
+      <div class="two-col">
+        <div>
+          <label for="clientCompany">Client company</label>
+          <input type="text" id="clientCompany" autocomplete="organization">
+          <div class="error" id="err-clientCompany"></div>
+        </div>
+        <div>
+          <label for="clientTitle">Client title</label>
+          <input type="text" id="clientTitle" autocomplete="organization-title">
+          <div class="error" id="err-clientTitle"></div>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div>
+          <label for="shipFirst">Shipping first name</label>
+          <input type="text" id="shipFirst" autocomplete="given-name">
+          <div class="error" id="err-shipFirst"></div>
+        </div>
+        <div>
+          <label for="shipLast">Shipping last name</label>
+          <input type="text" id="shipLast" autocomplete="family-name">
+          <div class="error" id="err-shipLast"></div>
+        </div>
+      </div>
+
+      <label for="addr1">Shipping address</label>
+      <input type="text" id="addr1" placeholder="Street address" autocomplete="address-line1">
+      <div class="error" id="err-addr1"></div>
+      <div class="two-col" style="margin-top:10px;">
+        <input type="text" id="addr2" placeholder="Apt / suite (optional)" autocomplete="address-line2">
+        <input type="text" id="city" placeholder="City" autocomplete="address-level2">
+      </div>
+      <div class="two-col" style="margin-top:10px;">
+        <input type="text" id="state" placeholder="State" autocomplete="address-level1">
+        <input type="text" id="zip" placeholder="ZIP code" autocomplete="postal-code">
+      </div>
+
+      <label for="shoeSize">Shoe size (US)</label>
+      <input type="text" id="shoeSize" placeholder="e.g. Men's 10 / Women's 8.5">
+      <div class="hint">Please double-check this against the Vans size chart before submitting.</div>
+      <div class="error" id="err-shoeSize"></div>
+
+      <div class="disclaimer">
+        <input type="checkbox" id="disclaimer">
+        <label for="disclaimer" style="margin:0; text-transform:none; letter-spacing:0; font-family:'IBM Plex Sans', sans-serif; font-size:14px; color:var(--muted);">
+          By submitting this form, you confirm that your shipping address and shoe size are correct. Once your form has been submitted, we won't be able to make any changes, so we appreciate you taking a moment to review your information. Thank you for helping us ensure everything is accurate!
+        </label>
+      </div>
+
+      <button class="submit" id="submitBtn" disabled>Lock In My Design! &#127881;</button>
+      <div class="status" id="submitStatus"></div>
+    </div>
+  </div>
+
+  <div id="confirmView" style="display:none;">
+    <div class="confirm">
+      <div class="confetti-wrap" id="confettiWrap"></div>
+      <div class="confirm-badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--paper)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l5 5L20 6"/></svg>
+      </div>
+      <p class="eyebrow" style="text-align:center;">Received</p>
+      <h1 class="title">You're In! &#127881;</h1>
+      <p class="subtitle" style="margin:0 auto;">Your one-of-a-kind design just landed on our master list. We'll place one big order with Vans that brings everyone's kicks to life &mdash; yours included.</p>
+      <div class="tag"><div>Reference code</div><div class="code" id="refCode"></div><button class="copy-code-btn" id="copyRefBtn" type="button">Copy</button></div>
+
+      <div class="next-steps">
+        <div class="next-step"><span class="num">1</span><p>We collect every design from today's guests</p></div>
+        <div class="next-step"><span class="num">2</span><p>We place one big consolidated order with Vans</p></div>
+        <div class="next-step"><span class="num">3</span><p>Your custom kicks ship straight to you</p></div>
+      </div>
+
+      <p class="subtitle" style="margin:16px auto 0;">Noticed a mistake? Just find your program coordinator &mdash; no need to resubmit.</p>
+      <button class="submit" id="nextGuestBtn" type="button" style="max-width:320px; margin-top:16px;">Design The Next Pair! &#128094;</button>
+    </div>
+  </div>
+
+  <div class="team-toggle"><button id="teamToggleBtn" type="button">Program team &middot; master sheet</button></div>
+  <div class="team-panel" id="teamPanel" style="display:none;">
+    <h3>Master sheet</h3>
+    <p class="hint" style="margin-top:0;">Every submission below, live. This is the sheet to send to Vans.</p>
+    <label class="first" for="teamCode">Access code</label>
+    <input type="text" id="teamCode" placeholder="Enter access code">
+    <div class="toolbar">
+      <button class="btn" id="teamUnlockBtn" type="button">View master sheet</button>
+      <button class="btn" id="exportCsvBtn" type="button" style="display:none;">Download as spreadsheet (CSV)</button>
+      <button class="btn primary" id="exportPacketBtn" type="button" style="display:none;">Export packet for Vans</button>
+      <button class="btn" id="refreshBtn" type="button" style="display:none;">Refresh</button>
+      <span class="hint" id="lastUpdated" style="display:none; align-self:center;"></span>
+    </div>
+    <div id="masterListWrap"></div>
+  </div>
+
+</div>
+
+<script>
+/* ------------------------------------------------------------------
+   Storage — a real backend now: a Vercel serverless function
+   (api/submissions.js) backed by Vercel KV. Submissions save via POST
+   (no auth needed, guests use this). The master sheet loads via GET,
+   which now requires the access code to be checked *server-side* —
+   real protection, not just a check hidden in this JS file.
+------------------------------------------------------------------- */
+let teamAccessCode = ""; // set once the team successfully unlocks the sheet
+
+async function saveSubmission(entry){
+  const res = await fetch("/api/submissions", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(entry)
+  });
+  if(!res.ok) throw new Error("Storage write failed (" + res.status + ")");
+}
+async function loadSubmissions(code){
+  const res = await fetch("/api/submissions?code=" + encodeURIComponent(code));
+  if(res.status === 401) throw new Error("unauthorized");
+  if(!res.ok) throw new Error("Failed to load (" + res.status + ")");
+  const data = await res.json();
+  return data.entries || [];
+}
+
+/* ---------------------------- Step 01: design capture ---------------------------- */
+const designUrlInput = document.getElementById("designUrl");
+const linkStatusBox = document.getElementById("linkStatusBox");
+const linkStatusIcon = document.getElementById("linkStatusIcon");
+const linkStatusText = document.getElementById("linkStatusText");
+const dot1 = document.getElementById("dot1");
+const dot2 = document.getElementById("dot2");
+
+let waitingForReturn = false;
+let openedWindow = null;
+let pollTimer = null;
+
+// A real paste (Cmd+V, or tapping "Paste" on iPad) is a completely different
+// browser mechanism from navigator.clipboard.readText() — it's tied directly
+// to the guest's own gesture, so it NEVER triggers a permission prompt, on
+// Chrome or Safari. That's the fix: no more background clipboard reads, no
+// more Block/Allow dialog. The guest does one paste into a visible field.
+function looksLikeDesignLink(text){
+  if(!text) return false;
+  const t = text.trim();
+  if(!/^https?:\/\//i.test(t)) return false;
+  if(t.includes(" ")) return false;
+  return true;
+}
+
+function markLinkFound(url){
+  designUrlInput.value = url;
+  document.getElementById("err-designUrl").textContent = "";
+  linkStatusBox.classList.remove("waiting");
+  linkStatusBox.classList.add("done");
+  linkStatusIcon.textContent = "\u2713";
+  linkStatusText.innerHTML = "<strong>Nice! Your design is saved. &#127775;</strong>Scroll down to finish shipping details.";
+  dot1.classList.add("done"); dot1.classList.remove("active");
+  dot2.classList.add("active");
+  waitingForReturn = false;
+  if(pollTimer){ clearInterval(pollTimer); pollTimer = null; }
+}
+
+function handleReturn(){
+  if(!waitingForReturn) return;
+  // Bring the guest's attention straight to the paste field — no permission
+  // check needed, since pasting itself never prompts.
+  designUrlInput.focus();
+}
+
+document.querySelectorAll(".shoe-card").forEach(card => {
+  card.addEventListener("click", (e) => {
+    e.preventDefault();
+    const url = card.getAttribute("data-url");
+
+    // Position the window next to this one. Note: we deliberately do NOT
+    // pass "noopener" here — that flag forces window.open() to return null
+    // every time, which broke both the sizing and the "detect when they
+    // come back" logic below. Vans is a known, trusted destination, so
+    // keeping the handle is the right tradeoff.
+    let features = "";
+    try{
+      const screenW = window.screen.availWidth || 1280;
+      const screenH = window.screen.availHeight || 800;
+      const halfW = Math.floor(screenW / 2);
+      features = `width=${halfW},height=${screenH},left=${screenW - halfW},top=0`;
+    }catch(err){ features = ""; }
+
+    // Reusing the same window name means picking a different shoe re-uses
+    // the same window instead of piling up extra ones.
+    openedWindow = window.open(url, "vansDesigner", features);
+    if(openedWindow){ try{ openedWindow.focus(); }catch(err){} }
+
+    waitingForReturn = true;
+    linkStatusBox.style.display = "flex";
+    if(pollTimer) clearInterval(pollTimer);
+    pollTimer = setInterval(() => {
+      if(openedWindow && openedWindow.closed && waitingForReturn) handleReturn();
+    }, 1000);
+  });
+});
+
+window.addEventListener("focus", handleReturn);
+document.addEventListener("visibilitychange", () => {
+  if(document.visibilityState === "visible") handleReturn();
+});
+
+// The actual fix: listen for the native paste event on a visible, focusable
+// input. This is a synchronous, gesture-tied browser event — it cannot show
+// a permission prompt, unlike navigator.clipboard.readText().
+designUrlInput.addEventListener("paste", (e) => {
+  const text = (e.clipboardData || window.clipboardData).getData("text/plain");
+  if(text && looksLikeDesignLink(text)){
+    setTimeout(() => markLinkFound(text.trim()), 0);
+  }
+});
+designUrlInput.addEventListener("input", () => {
+  const v = designUrlInput.value.trim();
+  if(v && looksLikeDesignLink(v)) markLinkFound(v);
+});
+
+/* ---------------------------- Step 02: form validation & submit ---------------------------- */
+const disclaimerBox = document.getElementById("disclaimer");
+const submitBtn = document.getElementById("submitBtn");
+disclaimerBox.addEventListener("change", () => { submitBtn.disabled = !disclaimerBox.checked; });
+
+function clearErrors(){ document.querySelectorAll(".error").forEach(el => el.textContent = ""); }
+function setError(id, msg){ const el = document.getElementById("err-" + id); if(el) el.textContent = msg; }
+
+function validate(){
+  clearErrors();
+  let ok = true;
+  const required = {
+    clientName:"Client name is required.",
+    clientCompany:"Client company is required.",
+    clientTitle:"Client title is required.",
+    shipFirst:"Shipping first name is required.",
+    shipLast:"Shipping last name is required.",
+    addr1:"Street address is required.",
+    shoeSize:"Shoe size is required.",
+    designUrl:"Please finish Step 01 first — design your shoe and come back here."
+  };
+  for(const id in required){
+    if(!document.getElementById(id).value.trim()){ setError(id, required[id]); ok = false; }
+  }
+  const designUrl = designUrlInput.value.trim();
+  if(designUrl && !looksLikeDesignLink(designUrl)){
+    setError("designUrl", "This doesn't look like a link from Vans. Please double-check it.");
+    ok = false;
+  }
+  return ok;
+}
+
+function refCode(){
+  const d = new Date();
+  const stamp = d.toISOString().slice(0,10).replace(/-/g,"");
+  const rand = Math.random().toString(36).slice(2,6).toUpperCase();
+  return "VANS-" + stamp + "-" + rand;
+}
+
+const confettiColors = ["#77C7C9", "#43A3A3", "#125C60", "#E8DEC7", "#C9BBA0"];
+function launchConfetti(){
+  const wrap = document.getElementById("confettiWrap");
+  wrap.innerHTML = "";
+  const pieceCount = 24;
+  for(let i = 0; i < pieceCount; i++){
+    const piece = document.createElement("div");
+    piece.className = "confetti-piece";
+    piece.style.left = (Math.random() * 100) + "%";
+    piece.style.background = confettiColors[i % confettiColors.length];
+    piece.style.animationDelay = (Math.random() * 0.3) + "s";
+    piece.style.borderRadius = Math.random() > 0.5 ? "50%" : "2px";
+    wrap.appendChild(piece);
+  }
+  setTimeout(() => { wrap.innerHTML = ""; }, 2200);
+}
+
+document.getElementById("copyRefBtn").addEventListener("click", async () => {
+  const btn = document.getElementById("copyRefBtn");
+  try{
+    await navigator.clipboard.writeText(document.getElementById("refCode").textContent);
+    btn.textContent = "Copied!";
+    setTimeout(() => { btn.textContent = "Copy"; }, 1500);
+  }catch(e){
+    btn.textContent = "Failed";
+    setTimeout(() => { btn.textContent = "Copy"; }, 1500);
+  }
+});
+
+submitBtn.addEventListener("click", async () => {
+  if(!validate()) return;
+  const entry = {
+    id: refCode(),
+    submittedAt: new Date().toISOString(),
+    clientName: document.getElementById("clientName").value.trim(),
+    clientCompany: document.getElementById("clientCompany").value.trim(),
+    clientTitle: document.getElementById("clientTitle").value.trim(),
+    shipFirst: document.getElementById("shipFirst").value.trim(),
+    shipLast: document.getElementById("shipLast").value.trim(),
+    address: {
+      line1: document.getElementById("addr1").value.trim(),
+      line2: document.getElementById("addr2").value.trim(),
+      city: document.getElementById("city").value.trim(),
+      state: document.getElementById("state").value.trim(),
+      zip: document.getElementById("zip").value.trim()
+    },
+    shoeSize: document.getElementById("shoeSize").value.trim(),
+    designUrl: designUrlInput.value.trim()
+  };
+
+  submitBtn.disabled = true;
+  document.getElementById("submitStatus").textContent = "Saving your design...";
+  try{
+    await saveSubmission(entry);
+    document.getElementById("refCode").textContent = entry.id;
+    document.getElementById("formView").style.display = "none";
+    document.getElementById("confirmView").style.display = "block";
+    launchConfetti();
+
+    // Close the guest's Vans window if it's still open — the design is
+    // saved now, no reason to leave it hanging around for the next person.
+    if(openedWindow && !openedWindow.closed){
+      try{ openedWindow.close(); }catch(err){}
+    }
+    if(pollTimer){ clearInterval(pollTimer); pollTimer = null; }
+  }catch(e){
+    console.error("Save failed:", e);
+    document.getElementById("submitStatus").textContent =
+      "Something went wrong saving your entry (" + (e && e.message ? e.message : "unknown error") + "). Please try again in a moment.";
+    submitBtn.disabled = false;
+  }
+});
+
+function resetForNextGuest(){
+  // Clear every field back to blank.
+  ["clientName","clientCompany","clientTitle","shipFirst","shipLast",
+   "addr1","addr2","city","state","zip","shoeSize"].forEach(id => {
+    document.getElementById(id).value = "";
+  });
+  designUrlInput.value = "";
+  disclaimerBox.checked = false;
+  submitBtn.disabled = true;
+  clearErrors();
+  document.getElementById("submitStatus").textContent = "";
+
+  // Reset the design-link status box back to its starting state.
+  linkStatusBox.style.display = "none";
+  linkStatusBox.classList.remove("done");
+  linkStatusBox.classList.add("waiting");
+  linkStatusIcon.textContent = "\u2026";
+  linkStatusText.innerHTML = "<strong>Hanging tight while you create...</strong>Once you're done on Vans, come back here and paste your link below.";
+  waitingForReturn = false;
+  openedWindow = null;
+
+  // Reset the progress bar.
+  dot1.classList.add("active"); dot1.classList.remove("done");
+  dot2.classList.remove("active"); dot2.classList.remove("done");
+
+  // Swap back to the form and scroll to the top for the next guest.
+  document.getElementById("confirmView").style.display = "none";
+  document.getElementById("formView").style.display = "block";
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+document.getElementById("nextGuestBtn").addEventListener("click", resetForNextGuest);
+
+/* ---------------------------- Master sheet (team) ---------------------------- */
+const teamToggleBtn = document.getElementById("teamToggleBtn");
+const teamPanel = document.getElementById("teamPanel");
+const teamUnlockBtn = document.getElementById("teamUnlockBtn");
+const exportCsvBtn = document.getElementById("exportCsvBtn");
+const exportPacketBtn = document.getElementById("exportPacketBtn");
+const refreshBtn = document.getElementById("refreshBtn");
+const lastUpdatedEl = document.getElementById("lastUpdated");
+const masterListWrap = document.getElementById("masterListWrap");
+let unlockedList = [];
+
+teamToggleBtn.addEventListener("click", () => {
+  const nowOpen = teamPanel.style.display === "none";
+  teamPanel.style.display = nowOpen ? "block" : "none";
+  if(nowOpen){
+    if(exportCsvBtn.style.display !== "none") startAutoRefresh(); // already unlocked from earlier in this session
+  }else{
+    stopAutoRefresh();
+  }
+});
+
+function renderTable(list){
+  masterListWrap.innerHTML = "";
+  if(!list.length){
+    masterListWrap.innerHTML = "<p class='hint'>No submissions yet.</p>";
+    return;
+  }
+  const table = document.createElement("table");
+  table.className = "master";
+  table.innerHTML = "<thead><tr><th>Ref</th><th>Client</th><th>Ship to</th><th>Size</th><th>Design link</th><th>Submitted</th></tr></thead>";
+  const tbody = document.createElement("tbody");
+  list.forEach(e => {
+    const tr = document.createElement("tr");
+    const tdRef = document.createElement("td"); tdRef.textContent = e.id;
+    const tdClient = document.createElement("td"); tdClient.innerHTML = `${e.clientName}<br>${e.clientCompany}<br>${e.clientTitle}`;
+    const tdShip = document.createElement("td"); tdShip.innerHTML = `${e.shipFirst} ${e.shipLast}<br>${e.address.line1} ${e.address.line2||""}<br>${e.address.city}, ${e.address.state} ${e.address.zip}`;
+    const tdSize = document.createElement("td"); tdSize.textContent = e.shoeSize;
+
+    const tdDesign = document.createElement("td");
+    const designLink = document.createElement("a");
+    designLink.href = e.designUrl; designLink.target = "_blank"; designLink.rel = "noopener"; designLink.textContent = "Open design";
+    const copyBtn = document.createElement("button");
+    copyBtn.textContent = "Copy"; copyBtn.className = "btn"; copyBtn.style.fontSize = "11px"; copyBtn.style.padding = "3px 8px"; copyBtn.style.marginLeft = "6px";
+    copyBtn.addEventListener("click", async () => {
+      try{ await navigator.clipboard.writeText(e.designUrl); copyBtn.textContent = "Copied"; setTimeout(() => copyBtn.textContent = "Copy", 1500); }
+      catch(err){ copyBtn.textContent = "Failed"; }
+    });
+    tdDesign.appendChild(designLink); tdDesign.appendChild(copyBtn);
+
+    const tdDate = document.createElement("td"); tdDate.textContent = new Date(e.submittedAt).toLocaleString();
+    tr.append(tdRef, tdClient, tdShip, tdSize, tdDesign, tdDate);
+    tbody.appendChild(tr);
+  });
+  table.appendChild(tbody);
+  masterListWrap.appendChild(table);
+}
+
+function toCsv(list){
+  const headers = ["Ref","Client Name","Client Company","Client Title","Ship First","Ship Last",
+                    "Address Line 1","Address Line 2","City","State","ZIP","Shoe Size","Design URL","Submitted At"];
+  const lines = [headers.join(",")];
+  list.forEach(e => {
+    const row = [e.id, e.clientName, e.clientCompany, e.clientTitle, e.shipFirst, e.shipLast,
+                 e.address.line1, e.address.line2, e.address.city, e.address.state, e.address.zip,
+                 e.shoeSize, e.designUrl, e.submittedAt]
+      .map(v => `"${String(v || "").replace(/"/g,'""')}"`);
+    lines.push(row.join(","));
+  });
+  return lines.join("\n");
+}
+
+function buildPacketHtml(list){
+  const rows = list.map((e, i) => `
+    <tr>
+      <td>${i + 1}</td>
+      <td><strong>${e.shipFirst} ${e.shipLast}</strong><br><span class="meta">${e.clientName} &middot; ${e.clientCompany} &middot; ${e.clientTitle}</span></td>
+      <td>${e.address.line1}${e.address.line2 ? ", " + e.address.line2 : ""}<br>${e.address.city}, ${e.address.state} ${e.address.zip}</td>
+      <td>${e.shoeSize}</td>
+      <td><a href="${e.designUrl}" target="_blank" rel="noopener">View exact design &rarr;</a><br><span class="meta">${e.id}</span></td>
+    </tr>`).join("");
+  return `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Vans Order Packet</title>
+  <style>
+    body{font-family:Arial, sans-serif; color:#125C60; margin:32px; font-size:13px;}
+    h1{font-size:20px; margin-bottom:2px;}
+    .meta{color:#639393; font-size:11px;}
+    .note{background:#F9F9F2; border:1px solid #B4D9E3; padding:10px 14px; margin:14px 0; font-size:12px;}
+    table{width:100%; border-collapse:collapse; margin-top:16px;}
+    th, td{border:1px solid #B4D9E3; padding:8px; text-align:left; vertical-align:top;}
+    th{background:#D7E9EB; font-size:11px; text-transform:uppercase; letter-spacing:0.5px;}
+    a{color:#43A3A3;}
+    @media print{ a{color:#125C60;} }
+  </style></head>
+  <body>
+    <h1>Visit Anaheim &times; Vans &mdash; Consolidated Order Packet</h1>
+    <p class="meta">Generated ${new Date().toLocaleString()} &middot; ${list.length} pair${list.length === 1 ? "" : "s"}</p>
+    <div class="note">Each "View exact design" link opens the guest's saved design directly in the Vans builder &mdash; that link is the authoritative spec for colors, materials, and panels. Please view only; the links remain editable, so avoid changing selections while reviewing.</div>
+    <table>
+      <thead><tr><th>#</th><th>Ship to / Client</th><th>Address</th><th>Size</th><th>Design</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+  </body></html>`;
+}
+
+async function refreshMasterList(showLoading){
+  if(showLoading) masterListWrap.innerHTML = "<p class='hint'>Loading...</p>";
+  try{
+    unlockedList = await loadSubmissions(teamAccessCode);
+    renderTable(unlockedList);
+    lastUpdatedEl.textContent = "Last updated " + new Date().toLocaleTimeString();
+  }catch(e){
+    if(e.message === "unauthorized"){
+      masterListWrap.innerHTML = "<p class='error'>Incorrect access code.</p>";
+      stopAutoRefresh();
+    }else{
+      masterListWrap.innerHTML = "<p class='error'>Couldn't load the master sheet right now. Try Refresh in a moment.</p>";
+    }
+  }
+}
+
+let autoRefreshTimer = null;
+function startAutoRefresh(){
+  if(autoRefreshTimer) return;
+  autoRefreshTimer = setInterval(() => refreshMasterList(false), 10000);
+}
+function stopAutoRefresh(){
+  if(autoRefreshTimer){ clearInterval(autoRefreshTimer); autoRefreshTimer = null; }
+}
+
+teamUnlockBtn.addEventListener("click", async () => {
+  const code = document.getElementById("teamCode").value.trim();
+  teamAccessCode = code;
+  masterListWrap.innerHTML = "<p class='hint'>Checking access code...</p>";
+  try{
+    unlockedList = await loadSubmissions(code);
+  }catch(e){
+    console.error("Master sheet unlock failed:", e);
+    if(e.message === "unauthorized"){
+      masterListWrap.innerHTML = "<p class='error'>Incorrect access code.</p>";
+    }else{
+      masterListWrap.innerHTML = "<p class='error'>Couldn't reach the server (" + e.message + "). This isn't a wrong code — something's off with the deployment. Try again in a moment.</p>";
+    }
+    return;
+  }
+  exportCsvBtn.style.display = "inline-block";
+  exportPacketBtn.style.display = "inline-block";
+  refreshBtn.style.display = "inline-block";
+  lastUpdatedEl.style.display = "inline-block";
+  renderTable(unlockedList);
+  lastUpdatedEl.textContent = "Last updated " + new Date().toLocaleTimeString();
+  startAutoRefresh();
+});
+refreshBtn.addEventListener("click", () => refreshMasterList(true));
+exportCsvBtn.addEventListener("click", () => {
+  const csv = toCsv(unlockedList);
+  const blob = new Blob([csv], {type:"text/csv"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = "vans-master-order-list.csv"; a.click();
+  URL.revokeObjectURL(url);
+});
+exportPacketBtn.addEventListener("click", () => {
+  const html = buildPacketHtml(unlockedList);
+  const blob = new Blob([html], {type:"text/html"});
+  const url = URL.createObjectURL(blob);
+  window.open(url, "_blank");
+});
+</script>
+</body>
+</html>
