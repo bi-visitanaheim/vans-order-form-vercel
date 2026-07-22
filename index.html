@@ -51,8 +51,9 @@
   .step p{margin:0 0 14px; color:var(--muted); font-size:16px;}
 
   .howto{background:var(--paper); border:1px solid var(--line); border-radius:var(--radius); padding:20px 22px; margin:14px 0;}
-  .howto ol{margin:0; padding-left:20px;}
+  .howto ol{margin:0; padding-left:0; list-style:none;}
   .howto li{margin-bottom:12px; font-size:17px; color:var(--ink); font-weight:500; line-height:1.4;}
+  .howto strong, .hint strong{font-size:1.12em;}
   .howto li:last-child{margin-bottom:0;}
   .howto .callout{background:var(--sand); border-radius:var(--radius); padding:2px 6px; font-weight:600;}
   .tap-diagram{background:var(--panel); border:1px solid var(--wash); border-radius:var(--radius); padding:14px; margin-top:10px;}
@@ -78,8 +79,6 @@
 
 
   .btn{font-family:'IBM Plex Mono', monospace; font-size:13px; letter-spacing:0.5px; padding:10px 16px; border:1px solid var(--ink); background:var(--paper); border-radius:var(--radius); cursor:pointer;}
-  .row-inline{display:flex; align-items:center; gap:12px; flex-wrap:wrap;}
-  .design-image-preview{max-width:160px; border:1px solid var(--line); border-radius:var(--radius); display:block;}
   .btn:hover{background:var(--sand);}
   .btn.primary{background:var(--ink); color:var(--paper);}
   .btn.primary:hover{background:#33302a;}
@@ -295,14 +294,6 @@
       <label class="first" for="designUrl" style="margin-top:16px; font-size:15px;">Paste your design link here</label>
       <input type="url" id="designUrl" placeholder="Press Cmd+V (or tap and hold to Paste)" style="border:2px solid var(--teal-light); font-size:17px; padding:14px 14px;">
       <div class="error" id="err-designUrl"></div>
-
-      <label class="first" for="designImageFile" style="margin-top:16px;">Have a photo of your design? Attach it here <span style="text-transform:none; font-family:'IBM Plex Sans',sans-serif; letter-spacing:0; color:var(--faint);">(optional)</span></label>
-      <div class="row-inline">
-        <button class="btn" id="attachImageBtn" type="button">Choose photo</button>
-        <span id="attachImageStatus" class="hint"></span>
-      </div>
-      <input type="file" id="designImageFile" accept="image/*" style="display:none;">
-      <div id="designImagePreviewWrap" style="margin-top:10px;"></div>
     </div>
 
     <div class="step">
@@ -449,7 +440,6 @@ const dot4 = document.getElementById("dot4");
 
 let waitingForReturn = false;
 let selectedShoeStyle = "";
-let designImageDataUrl = "";
 let openedWindow = null;
 let pollTimer = null;
 
@@ -542,42 +532,6 @@ designUrlInput.addEventListener("input", () => {
   if(v && looksLikeDesignLink(v)) markLinkFound(v);
 });
 
-/* ---------------------------- Optional: attach downloaded design photo ---------------------------- */
-const attachImageBtn = document.getElementById("attachImageBtn");
-const attachImageStatus = document.getElementById("attachImageStatus");
-const designImageFile = document.getElementById("designImageFile");
-const designImagePreviewWrap = document.getElementById("designImagePreviewWrap");
-
-attachImageBtn.addEventListener("click", () => designImageFile.click());
-
-function resizeImageToDataUrl(imgEl, maxW){
-  const scale = Math.min(1, maxW / (imgEl.naturalWidth || imgEl.width));
-  const w = Math.round((imgEl.naturalWidth || imgEl.width) * scale);
-  const h = Math.round((imgEl.naturalHeight || imgEl.height) * scale);
-  const canvas = document.createElement("canvas");
-  canvas.width = w; canvas.height = h;
-  canvas.getContext("2d").drawImage(imgEl, 0, 0, w, h);
-  return canvas.toDataURL("image/jpeg", 0.75);
-}
-
-designImageFile.addEventListener("change", (e) => {
-  const file = e.target.files[0];
-  if(!file) return;
-  attachImageStatus.textContent = "Processing...";
-  const reader = new FileReader();
-  reader.onload = (ev) => {
-    const img = new Image();
-    img.onload = () => {
-      designImageDataUrl = resizeImageToDataUrl(img, 900);
-      designImagePreviewWrap.innerHTML = `<img src="${designImageDataUrl}" class="design-image-preview" alt="Your design photo">`;
-      attachImageBtn.textContent = "Change photo";
-      attachImageStatus.textContent = "Photo attached!";
-    };
-    img.src = ev.target.result;
-  };
-  reader.readAsDataURL(file);
-});
-
 /* ---------------------------- Step 02: form validation & submit ---------------------------- */
 const disclaimerBox = document.getElementById("disclaimer");
 const submitBtn = document.getElementById("submitBtn");
@@ -665,8 +619,7 @@ submitBtn.addEventListener("click", async () => {
     },
     shoeSize: document.getElementById("shoeSize").value.trim(),
     designUrl: designUrlInput.value.trim(),
-    shoeStyle: selectedShoeStyle || "Not recorded",
-    designImage: designImageDataUrl || ""
+    shoeStyle: selectedShoeStyle || "Not recorded"
   };
 
   submitBtn.disabled = true;
@@ -702,11 +655,6 @@ submitBtn.addEventListener("click", async () => {
 
 function resetForNextGuest(){
   selectedShoeStyle = "";
-  designImageDataUrl = "";
-  designImagePreviewWrap.innerHTML = "";
-  attachImageBtn.textContent = "Choose photo";
-  attachImageStatus.textContent = "";
-  designImageFile.value = "";
   // Clear every field back to blank.
   ["clientName","clientCompany","clientTitle","shipFirst","shipLast",
    "addr1","addr2","city","state","zip","shoeSize"].forEach(id => {
@@ -796,7 +744,7 @@ function renderTable(list){
   }
   const table = document.createElement("table");
   table.className = "master";
-  table.innerHTML = "<thead><tr><th>Ref</th><th>Client</th><th>Ship to</th><th>Style</th><th>Size</th><th>Design link</th><th>Photo</th><th>Submitted</th></tr></thead>";
+  table.innerHTML = "<thead><tr><th>Ref</th><th>Client</th><th>Ship to</th><th>Style</th><th>Size</th><th>Design link</th><th>Submitted</th></tr></thead>";
   const tbody = document.createElement("tbody");
   list.forEach(e => {
     const tr = document.createElement("tr");
@@ -817,19 +765,8 @@ function renderTable(list){
     });
     tdDesign.appendChild(designLink); tdDesign.appendChild(copyBtn);
 
-    const tdPhoto = document.createElement("td");
-    if(e.designImage){
-      const thumb = document.createElement("img");
-      thumb.src = e.designImage; thumb.style.width = "60px"; thumb.style.borderRadius = "2px"; thumb.style.cursor = "pointer";
-      thumb.title = "Click to view full size";
-      thumb.addEventListener("click", () => window.open(e.designImage, "_blank"));
-      tdPhoto.appendChild(thumb);
-    }else{
-      tdPhoto.innerHTML = "<span class='hint'>None</span>";
-    }
-
     const tdDate = document.createElement("td"); tdDate.textContent = new Date(e.submittedAt).toLocaleString();
-    tr.append(tdRef, tdClient, tdShip, tdStyle, tdSize, tdDesign, tdPhoto, tdDate);
+    tr.append(tdRef, tdClient, tdShip, tdStyle, tdSize, tdDesign, tdDate);
     tbody.appendChild(tr);
   });
   table.appendChild(tbody);
@@ -838,12 +775,12 @@ function renderTable(list){
 
 function toCsv(list){
   const headers = ["Ref","Client Name","Client Company","Client Title","Ship First","Ship Last",
-                    "Address Line 1","Address Line 2","City","State","ZIP","Style","Shoe Size","Design URL","Has Photo","Submitted At"];
+                    "Address Line 1","Address Line 2","City","State","ZIP","Style","Shoe Size","Design URL","Submitted At"];
   const lines = [headers.join(",")];
   list.forEach(e => {
     const row = [e.id, e.clientName, e.clientCompany, e.clientTitle, e.shipFirst, e.shipLast,
                  e.address.line1, e.address.line2, e.address.city, e.address.state, e.address.zip,
-                 e.shoeStyle || "Not recorded", e.shoeSize, e.designUrl, e.designImage ? "Yes" : "No", e.submittedAt]
+                 e.shoeStyle || "Not recorded", e.shoeSize, e.designUrl, e.submittedAt]
       .map(v => `"${String(v || "").replace(/"/g,'""')}"`);
     lines.push(row.join(","));
   });
@@ -880,13 +817,12 @@ function buildPacketHtml(list){
         <td>${e.address.line1}${e.address.line2 ? ", " + e.address.line2 : ""}<br>${e.address.city}, ${e.address.state} ${e.address.zip}</td>
         <td>${e.shoeSize}</td>
         <td><a href="${e.designUrl}" target="_blank" rel="noopener">View exact design &rarr;</a><br><span class="meta">${e.id}</span></td>
-        <td>${e.designImage ? `<img src="${e.designImage}" style="width:70px; border:1px solid #B4D9E3;">` : "<span class='meta'>&mdash;</span>"}</td>
       </tr>`;
     }).join("");
     return `
     <h2>${style} <span class="meta">(${entries.length} pair${entries.length === 1 ? "" : "s"})</span></h2>
     <table>
-      <thead><tr><th>#</th><th>Ship to / Client</th><th>Address</th><th>Size</th><th>Design</th><th>Photo</th></tr></thead>
+      <thead><tr><th>#</th><th>Ship to / Client</th><th>Address</th><th>Size</th><th>Design</th></tr></thead>
       <tbody>${rows}</tbody>
     </table>`;
   }).join("");
