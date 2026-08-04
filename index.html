@@ -192,7 +192,7 @@
       <h2>Design Your Shoe!</h2>
       <div class="howto">
         <ol>
-          <li><strong>Tap</strong> a shoe below and start creating. Vans' design tool pops up right alongside this one.</li>
+          <li><strong>Tap</strong> a shoe below and start creating. Vans' design tool opens in a new tab.</li>
           <li>Go wild with colors, materials, and laces. Make it unmistakably <em>you</em>.</li>
         </ol>
       </div>
@@ -388,7 +388,7 @@
   <div class="team-toggle"><button id="teamToggleBtn" type="button">Program team &middot; master sheet</button></div>
   <div class="team-panel" id="teamPanel" style="display:none;">
     <h3>Master sheet</h3>
-    <p class="hint" style="margin-top:0;">Every submission below, live. This is the sheet to send to Vans.</p>
+    <p class="hint" style="margin-top:0;">Every submission lands here live, just for your own eyes. Ready to send the order to Vans? Grab <strong>Export packet for Vans</strong> below instead. This table isn't the one to send.</p>
     <label class="first" for="teamCode">Access code</label>
     <input type="text" id="teamCode" placeholder="Enter access code">
     <div class="toolbar">
@@ -485,22 +485,13 @@ document.querySelectorAll(".shoe-card").forEach(card => {
     const url = card.getAttribute("data-url");
     selectedShoeStyle = card.getAttribute("data-style") || "";
 
-    // Position the window next to this one. Note: we deliberately do NOT
-    // pass "noopener" here — that flag forces window.open() to return null
-    // every time, which broke both the sizing and the "detect when they
-    // come back" logic below. Vans is a known, trusted destination, so
-    // keeping the handle is the right tradeoff.
-    let features = "";
-    try{
-      const screenW = window.screen.availWidth || 1280;
-      const screenH = window.screen.availHeight || 800;
-      const halfW = Math.floor(screenW / 2);
-      features = `width=${halfW},height=${screenH},left=${screenW - halfW},top=0`;
-    }catch(err){ features = ""; }
-
-    // Reusing the same window name means picking a different shoe re-uses
-    // the same window instead of piling up extra ones.
-    openedWindow = window.open(url, "vansDesigner", features);
+    // Same behavior on every device: open Vans in a plain new tab/window
+    // under one reused name. We deliberately don't try to size or position
+    // it — modern browsers increasingly ignore those hints anyway (so it
+    // was inconsistent even on desktop), and iPad/phone browsers can't
+    // honor them at all. Keeping this identical everywhere means the same
+    // "switch back and paste" flow works the same way on every device.
+    openedWindow = window.open(url, "vansDesigner");
     if(openedWindow){ try{ openedWindow.focus(); }catch(err){} }
 
     waitingForReturn = true;
@@ -568,7 +559,7 @@ function validate(){
 function refCode(){
   const d = new Date();
   const stamp = d.toISOString().slice(0,10).replace(/-/g,"");
-  const rand = Math.random().toString(36).slice(2,6).toUpperCase();
+  const rand = Math.random().toString(36).slice(2,9).toUpperCase();
   return "VANS-" + stamp + "-" + rand;
 }
 
@@ -846,7 +837,7 @@ function buildPacketHtml(list){
   <body>
     <h1>Visit Anaheim &times; Vans: Consolidated Order Packet</h1>
     <p class="meta">Generated ${new Date().toLocaleString()} &middot; ${list.length} pair${list.length === 1 ? "" : "s"} total</p>
-    <div class="note">Each "View exact design" link opens the guest's saved design directly in the Vans builder. That link is the authoritative spec for colors, materials, and panels. Please view only, since the links remain editable. Orders below are grouped by style and sorted by size for easier bulk fulfillment.</div>
+    <div class="note">Each "View exact design" link opens the guest's saved design right in the Vans builder, that's the real spec for colors, materials, and panels. Just look, don't click around in there, since the link stays editable. Everything below is grouped by style and sorted by size, so pulling the bulk order together is easy.</div>
 
     <div class="summary">
       <table><thead><tr><th>Style</th><th>Count</th></tr></thead><tbody>${summaryRows}</tbody></table>
@@ -876,7 +867,7 @@ async function refreshMasterList(showLoading){
 let autoRefreshTimer = null;
 function startAutoRefresh(){
   if(autoRefreshTimer) return;
-  autoRefreshTimer = setInterval(() => refreshMasterList(false), 10000);
+  autoRefreshTimer = setInterval(() => refreshMasterList(false), 20000);
 }
 function stopAutoRefresh(){
   if(autoRefreshTimer){ clearInterval(autoRefreshTimer); autoRefreshTimer = null; }
