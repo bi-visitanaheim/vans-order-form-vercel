@@ -8,6 +8,14 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
+@font-face{
+  font-family:'Sharp Sans Display No2';
+  src:url('/fonts/SharpSansDispNo2.woff2') format('woff2'),
+      url('/fonts/SharpSansDispNo2.woff') format('woff');
+  font-weight:normal;
+  font-style:normal;
+  font-display:swap;
+}
   :root{
     /* Original warm paper base, brought back as requested */
     --paper:#F4EFE3; --ink:#201D1A; --sand:#E8DEC7; --line:#C9BBA0;
@@ -32,7 +40,7 @@
   }
 
   .eyebrow{font-family:'IBM Plex Mono', monospace; font-size:14px; letter-spacing:2px; text-transform:uppercase; color:var(--red); margin:0 0 8px; font-weight:700;}
-  h1.title{font-family:'Archivo Black', sans-serif; font-size:clamp(38px, 7vw, 54px); line-height:1.02; margin:0 0 12px;}
+  h1.title{font-family:'Sharp Sans Display No2', 'Archivo Black', sans-serif; font-size:clamp(38px, 7vw, 54px); line-height:1.02; margin:0 0 12px;}
   .subtitle{max-width:56ch; color:var(--muted); font-size:18px; margin:0 0 24px; font-weight:500;}
   .hero{padding:36px 0 24px;}
   .logo{width:52px; height:52px; display:block; margin-bottom:14px;}
@@ -47,7 +55,7 @@
   .step{position:relative; background:var(--sand); border:1px dashed var(--line); border-radius:var(--radius); padding:28px 26px 30px; margin:22px 0;}
   .step::before{content:""; position:absolute; top:14px; left:-7px; width:14px; height:14px; background:var(--paper); border:1px dashed var(--line); border-radius:50%;}
   .step-num{font-family:'IBM Plex Mono', monospace; font-size:13px; letter-spacing:2px; color:var(--teal); font-weight:700; margin:0 0 6px; text-transform:uppercase;}
-  .step h2{font-family:'Archivo Black', sans-serif; font-size:28px; margin:0 0 14px; letter-spacing:0.2px;}
+  .step h2{font-family:'Sharp Sans Display No2', 'Archivo Black', sans-serif; font-size:28px; margin:0 0 14px; letter-spacing:0.2px;}
   .step p{margin:0 0 14px; color:var(--muted); font-size:16px;}
 
   .howto{background:var(--paper); border:1px solid var(--line); border-radius:var(--radius); padding:20px 22px; margin:14px 0;}
@@ -150,7 +158,7 @@
   .team-toggle{text-align:center; margin-top:40px;}
   .team-toggle button{background:none; border:none; font-family:'IBM Plex Mono', monospace; font-size:12px; letter-spacing:1px; text-transform:uppercase; color:var(--faint); cursor:pointer; text-decoration:underline;}
   .team-panel{margin-top:20px; border:1px solid var(--line); border-radius:var(--radius); background:var(--paper); padding:20px;}
-  .team-panel h3{font-family:'Archivo Black', sans-serif; font-size:16px; margin:0 0 4px;}
+  .team-panel h3{font-family:'Sharp Sans Display No2', 'Archivo Black', sans-serif; font-size:16px; margin:0 0 4px;}
   .summary-bar{background:var(--panel); border:1px solid var(--wash); border-radius:var(--radius); padding:10px 14px; margin-top:12px; font-size:13px; color:var(--ink);}
   .order-summary{background:var(--paper); border:1px solid var(--line); border-radius:var(--radius); padding:16px 20px; margin:16px auto; max-width:360px; text-align:left;}
   .order-summary h4{margin:0 0 10px; font-family:'IBM Plex Mono', monospace; font-size:11px; letter-spacing:1px; text-transform:uppercase; color:var(--teal-mid);}
@@ -341,6 +349,10 @@
           <div class="error" id="err-shipLast"></div>
         </div>
       </div>
+
+      <label for="guestEmail">Your email</label>
+      <input type="email" id="guestEmail" autocomplete="email" placeholder="So we can send your confirmation and, later, tracking">
+      <div class="error" id="err-guestEmail"></div>
 
       <label for="addr1">Shipping address</label>
       <input type="text" id="addr1" placeholder="Street address" autocomplete="address-line1">
@@ -594,12 +606,18 @@ function validate(){
     clientTitle:"Client title is required.",
     shipFirst:"Shipping first name is required.",
     shipLast:"Shipping last name is required.",
+    guestEmail:"Your email is required so we can send your confirmation.",
     addr1:"Street address is required.",
     shoeSize:"Shoe size is required.",
     designUrl:"Please finish Step 01 first: design your shoe and come back here."
   };
   for(const id in required){
     if(!document.getElementById(id).value.trim()){ setError(id, required[id]); ok = false; }
+  }
+  const emailVal = document.getElementById("guestEmail").value.trim();
+  if(emailVal && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal)){
+    setError("guestEmail", "That doesn't look like a valid email address.");
+    ok = false;
   }
   const designUrl = designUrlInput.value.trim();
   if(designUrl && !looksLikeDesignLink(designUrl)){
@@ -655,6 +673,7 @@ submitBtn.addEventListener("click", async () => {
     clientTitle: document.getElementById("clientTitle").value.trim(),
     shipFirst: document.getElementById("shipFirst").value.trim(),
     shipLast: document.getElementById("shipLast").value.trim(),
+    guestEmail: document.getElementById("guestEmail").value.trim(),
     address: {
       line1: document.getElementById("addr1").value.trim(),
       line2: document.getElementById("addr2").value.trim(),
@@ -701,7 +720,7 @@ submitBtn.addEventListener("click", async () => {
 function resetForNextGuest(){
   selectedShoeStyle = "";
   // Clear every field back to blank.
-  ["clientName","clientCompany","clientTitle","shipFirst","shipLast",
+  ["clientName","clientCompany","clientTitle","shipFirst","shipLast","guestEmail",
    "addr1","addr2","city","state","zip","shoeSize"].forEach(id => {
     document.getElementById(id).value = "";
   });
@@ -789,13 +808,21 @@ function renderTable(list){
   }
   const table = document.createElement("table");
   table.className = "master";
-  table.innerHTML = "<thead><tr><th>Ref</th><th>Client</th><th>Ship to</th><th>Style</th><th>Size</th><th>Design link</th><th>Submitted</th></tr></thead>";
+  table.innerHTML = "<thead><tr><th>Ref</th><th>Client</th><th>Ship to</th><th>Email</th><th>Style</th><th>Size</th><th>Design link</th><th>Submitted</th></tr></thead>";
   const tbody = document.createElement("tbody");
   list.forEach(e => {
     const tr = document.createElement("tr");
     const tdRef = document.createElement("td"); tdRef.textContent = e.id;
     const tdClient = document.createElement("td"); tdClient.innerHTML = `${e.clientName}<br>${e.clientCompany}<br>${e.clientTitle}`;
     const tdShip = document.createElement("td"); tdShip.innerHTML = `${e.shipFirst} ${e.shipLast}<br>${e.address.line1} ${e.address.line2||""}<br>${e.address.city}, ${e.address.state} ${e.address.zip}`;
+    const tdEmail = document.createElement("td");
+    if(e.guestEmail){
+      const mailLink = document.createElement("a");
+      mailLink.href = "mailto:" + e.guestEmail; mailLink.textContent = e.guestEmail;
+      tdEmail.appendChild(mailLink);
+    }else{
+      tdEmail.innerHTML = "<span class='hint'>None</span>";
+    }
     const tdStyle = document.createElement("td"); tdStyle.textContent = e.shoeStyle || "Not recorded";
     const tdSize = document.createElement("td"); tdSize.textContent = e.shoeSize;
 
@@ -811,7 +838,7 @@ function renderTable(list){
     tdDesign.appendChild(designLink); tdDesign.appendChild(copyBtn);
 
     const tdDate = document.createElement("td"); tdDate.textContent = new Date(e.submittedAt).toLocaleString();
-    tr.append(tdRef, tdClient, tdShip, tdStyle, tdSize, tdDesign, tdDate);
+    tr.append(tdRef, tdClient, tdShip, tdEmail, tdStyle, tdSize, tdDesign, tdDate);
     tbody.appendChild(tr);
   });
   table.appendChild(tbody);
@@ -819,11 +846,11 @@ function renderTable(list){
 }
 
 function toCsv(list){
-  const headers = ["Ref","Client Name","Client Company","Client Title","Ship First","Ship Last",
+  const headers = ["Ref","Client Name","Client Company","Client Title","Ship First","Ship Last","Email",
                     "Address Line 1","Address Line 2","City","State","ZIP","Style","Shoe Size","Design URL","Submitted At"];
   const lines = [headers.join(",")];
   list.forEach(e => {
-    const row = [e.id, e.clientName, e.clientCompany, e.clientTitle, e.shipFirst, e.shipLast,
+    const row = [e.id, e.clientName, e.clientCompany, e.clientTitle, e.shipFirst, e.shipLast, e.guestEmail,
                  e.address.line1, e.address.line2, e.address.city, e.address.state, e.address.zip,
                  e.shoeStyle || "Not recorded", e.shoeSize, e.designUrl, e.submittedAt]
       .map(v => `"${String(v || "").replace(/"/g,'""')}"`);
