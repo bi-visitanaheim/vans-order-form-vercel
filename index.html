@@ -201,21 +201,30 @@
         <a class="shoe-card" data-url="https://www.vans.com/en-us/customizer/slip-on-classic" data-style="Slip-On Classic">
           <span class="shoe-icon"><svg viewBox="0 0 120 60" fill="none" stroke="var(--teal-dark)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
             <path d="M10,44 C10,31 21,23 33,21 L72,9 C85,5 97,7 103,16 C109,25 106,35 97,41 L84,47 C63,55 33,55 17,49 C11,47 10,46 10,44 Z"/>
-            <path d="M52,20 L60,30 M62,16 L70,26" stroke-width="4.5"/>
+            <path d="M14,45 C20,49 32,51 46,51 L82,49 C90,48 95,45 96,41" stroke="var(--teal-mid)" stroke-width="3"/>
+            <path d="M50,19 L59,29 M60,15 L69,25" stroke-width="4.5"/>
           </svg></span>
           <span class="name">Slip-On Classic</span><span class="go">Start designing &rarr;</span>
         </a>
         <a class="shoe-card" data-url="https://www.vans.com/en-us/customizer/old-skool-classic" data-style="Old Skool Classic">
           <span class="shoe-icon"><svg viewBox="0 0 120 60" fill="none" stroke="var(--teal-dark)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
             <path d="M10,44 C10,31 21,23 33,21 L72,9 C85,5 97,7 103,16 C109,25 106,35 97,41 L84,47 C63,55 33,55 17,49 C11,47 10,46 10,44 Z"/>
+            <path d="M14,45 C20,49 32,51 46,51 L82,49 C90,48 95,45 96,41" stroke="var(--teal-mid)" stroke-width="3"/>
             <path d="M20,41 C36,24 54,24 68,34 C78,41 90,34 98,22" stroke="var(--teal-light)" stroke-width="8"/>
+            <circle cx="52" cy="15" r="2.2" fill="var(--teal-dark)"/>
+            <circle cx="61" cy="12" r="2.2" fill="var(--teal-dark)"/>
           </svg></span>
           <span class="name">Old Skool Classic</span><span class="go">Start designing &rarr;</span>
         </a>
         <a class="shoe-card" data-url="https://www.vans.com/en-us/customizer/authentic-classic" data-style="Authentic Classic">
           <span class="shoe-icon"><svg viewBox="0 0 120 60" fill="none" stroke="var(--teal-dark)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
             <path d="M10,44 C10,31 21,23 33,21 L72,9 C85,5 97,7 103,16 C109,25 106,35 97,41 L84,47 C63,55 33,55 17,49 C11,47 10,46 10,44 Z"/>
-            <path d="M40,32 L56,16 M46,38 L62,22 M52,44 L68,28" stroke-width="4.5"/>
+            <path d="M14,45 C20,49 32,51 46,51 L82,49 C90,48 95,45 96,41" stroke="var(--teal-mid)" stroke-width="3"/>
+            <path d="M38,33 L54,17 M45,38 L61,22 M52,43 L68,27" stroke-width="4"/>
+            <circle cx="38" cy="33" r="2" fill="var(--teal-dark)"/>
+            <circle cx="54" cy="17" r="2" fill="var(--teal-dark)"/>
+            <circle cx="52" cy="43" r="2" fill="var(--teal-dark)"/>
+            <circle cx="68" cy="27" r="2" fill="var(--teal-dark)"/>
           </svg></span>
           <span class="name">Authentic Classic</span><span class="go">Start designing &rarr;</span>
         </a>
@@ -344,7 +353,49 @@
       </div>
 
       <label for="shoeSize">Shoe size (US)</label>
-      <input type="text" id="shoeSize" placeholder="e.g. Men's 10 / Women's 8.5">
+      <select id="shoeSize">
+        <option value="" disabled selected>Choose a size</option>
+        <optgroup label="Men's (US)">
+        <option value="Men's 4">Men's 4</option>
+        <option value="Men's 4.5">Men's 4.5</option>
+        <option value="Men's 5">Men's 5</option>
+        <option value="Men's 5.5">Men's 5.5</option>
+        <option value="Men's 6">Men's 6</option>
+        <option value="Men's 6.5">Men's 6.5</option>
+        <option value="Men's 7">Men's 7</option>
+        <option value="Men's 7.5">Men's 7.5</option>
+        <option value="Men's 8">Men's 8</option>
+        <option value="Men's 8.5">Men's 8.5</option>
+        <option value="Men's 9">Men's 9</option>
+        <option value="Men's 9.5">Men's 9.5</option>
+        <option value="Men's 10">Men's 10</option>
+        <option value="Men's 10.5">Men's 10.5</option>
+        <option value="Men's 11">Men's 11</option>
+        <option value="Men's 11.5">Men's 11.5</option>
+        <option value="Men's 12">Men's 12</option>
+        <option value="Men's 12.5">Men's 12.5</option>
+        <option value="Men's 13">Men's 13</option>
+        <option value="Men's 13.5">Men's 13.5</option>
+        <option value="Men's 14">Men's 14</option>
+        </optgroup>
+        <optgroup label="Women's (US)">
+        <option value="Women's 5">Women's 5</option>
+        <option value="Women's 5.5">Women's 5.5</option>
+        <option value="Women's 6">Women's 6</option>
+        <option value="Women's 6.5">Women's 6.5</option>
+        <option value="Women's 7">Women's 7</option>
+        <option value="Women's 7.5">Women's 7.5</option>
+        <option value="Women's 8">Women's 8</option>
+        <option value="Women's 8.5">Women's 8.5</option>
+        <option value="Women's 9">Women's 9</option>
+        <option value="Women's 9.5">Women's 9.5</option>
+        <option value="Women's 10">Women's 10</option>
+        <option value="Women's 10.5">Women's 10.5</option>
+        <option value="Women's 11">Women's 11</option>
+        <option value="Women's 11.5">Women's 11.5</option>
+        <option value="Women's 12">Women's 12</option>
+        </optgroup>
+      </select>
       <div class="hint">Please double-check this against the Vans size chart before submitting.</div>
       <div class="error" id="err-shoeSize"></div>
 
