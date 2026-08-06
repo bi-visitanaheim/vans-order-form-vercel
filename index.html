@@ -64,6 +64,7 @@
   .shoe-card{display:flex; flex-direction:column; align-items:flex-start; gap:8px; background:var(--paper); border:1px solid var(--line); border-radius:var(--radius); padding:16px; text-decoration:none; color:var(--ink); transition:transform 0.12s ease, border-color 0.12s ease; cursor:pointer;}
   .shoe-card:hover{transform:translateY(-2px); border-color:var(--teal-light);}
   .shoe-card .name{font-weight:700; font-size:17px;}
+  .shoe-card .cue{font-size:12px; color:var(--faint); font-style:italic; margin:2px 0 6px;}
   .shoe-card .go{font-family:'IBM Plex Mono', monospace; font-size:13px; font-weight:700; color:var(--red);}
 
   .status-box{
@@ -199,35 +200,36 @@
 
       <div class="shoe-grid">
         <a class="shoe-card" data-url="https://www.vans.com/en-us/customizer/slip-on-classic" data-style="Slip-On Classic">
-          <span class="shoe-icon"><svg viewBox="0 0 120 60" fill="none" stroke="var(--teal-dark)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M10,44 C10,31 21,23 33,21 L72,9 C85,5 97,7 103,16 C109,25 106,35 97,41 L84,47 C63,55 33,55 17,49 C11,47 10,46 10,44 Z"/>
-            <path d="M14,45 C20,49 32,51 46,51 L82,49 C90,48 95,45 96,41" stroke="var(--teal-mid)" stroke-width="3"/>
-            <path d="M50,19 L59,29 M60,15 L69,25" stroke-width="4.5"/>
+          <span class="shoe-icon"><svg viewBox="0 0 140 70" fill="none" stroke="var(--teal-dark)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14,48 L120,48 C127,48 130,51 130,54 C130,58 126,60 119,60 L20,60 C12,60 8,57 8,53 C8,50 10,48 14,48 Z"/>
+            <path d="M20,48 C16,38 16,24 21,15 C24,10 28,9 32,11 L106,29 C115,31 122,35 126,41 C129,45 128,47 124,48"/>
+            <path d="M52,20 L64,30 M66,15 L78,25" stroke-width="4.5"/>
           </svg></span>
-          <span class="name">Slip-On Classic</span><span class="go">Start designing &rarr;</span>
+          <span class="name">Slip-On Classic</span><span class="cue">No laces, just clean elastic gores</span><span class="go">Start designing &rarr;</span>
         </a>
         <a class="shoe-card" data-url="https://www.vans.com/en-us/customizer/old-skool-classic" data-style="Old Skool Classic">
-          <span class="shoe-icon"><svg viewBox="0 0 120 60" fill="none" stroke="var(--teal-dark)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M10,44 C10,31 21,23 33,21 L72,9 C85,5 97,7 103,16 C109,25 106,35 97,41 L84,47 C63,55 33,55 17,49 C11,47 10,46 10,44 Z"/>
-            <path d="M14,45 C20,49 32,51 46,51 L82,49 C90,48 95,45 96,41" stroke="var(--teal-mid)" stroke-width="3"/>
-            <path d="M20,41 C36,24 54,24 68,34 C78,41 90,34 98,22" stroke="var(--teal-light)" stroke-width="8"/>
-            <circle cx="52" cy="15" r="2.2" fill="var(--teal-dark)"/>
-            <circle cx="61" cy="12" r="2.2" fill="var(--teal-dark)"/>
+          <span class="shoe-icon"><svg viewBox="0 0 140 70" fill="none" stroke="var(--teal-dark)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14,48 L120,48 C127,48 130,51 130,54 C130,58 126,60 119,60 L20,60 C12,60 8,57 8,53 C8,50 10,48 14,48 Z"/>
+            <path d="M20,48 C16,38 16,24 21,15 C24,10 28,9 32,11 L106,29 C115,31 122,35 126,41 C129,45 128,47 124,48"/>
+            <path d="M30,44 C42,36 55,30 68,30 C78,30 85,32 92,31" stroke="var(--teal-light)" stroke-width="8"/>
+            <circle cx="58" cy="18" r="2.2" fill="var(--teal-dark)"/>
+            <circle cx="70" cy="21" r="2.2" fill="var(--teal-dark)"/>
           </svg></span>
-          <span class="name">Old Skool Classic</span><span class="go">Start designing &rarr;</span>
+          <span class="name">Old Skool Classic</span><span class="cue">The signature side stripe</span><span class="go">Start designing &rarr;</span>
         </a>
         <a class="shoe-card" data-url="https://www.vans.com/en-us/customizer/authentic-classic" data-style="Authentic Classic">
-          <span class="shoe-icon"><svg viewBox="0 0 120 60" fill="none" stroke="var(--teal-dark)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M10,44 C10,31 21,23 33,21 L72,9 C85,5 97,7 103,16 C109,25 106,35 97,41 L84,47 C63,55 33,55 17,49 C11,47 10,46 10,44 Z"/>
-            <path d="M14,45 C20,49 32,51 46,51 L82,49 C90,48 95,45 96,41" stroke="var(--teal-mid)" stroke-width="3"/>
-            <path d="M38,33 L54,17 M45,38 L61,22 M52,43 L68,27" stroke-width="4"/>
-            <circle cx="38" cy="33" r="2" fill="var(--teal-dark)"/>
-            <circle cx="54" cy="17" r="2" fill="var(--teal-dark)"/>
-            <circle cx="52" cy="43" r="2" fill="var(--teal-dark)"/>
-            <circle cx="68" cy="27" r="2" fill="var(--teal-dark)"/>
+          <span class="shoe-icon"><svg viewBox="0 0 140 70" fill="none" stroke="var(--teal-dark)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14,48 L120,48 C127,48 130,51 130,54 C130,58 126,60 119,60 L20,60 C12,60 8,57 8,53 C8,50 10,48 14,48 Z"/>
+            <path d="M20,48 C16,38 16,24 21,15 C24,10 28,9 32,11 L106,29 C115,31 122,35 126,41 C129,45 128,47 124,48"/>
+            <path d="M45,34 L60,18 M55,38 L70,22 M65,42 L80,26" stroke-width="4"/>
+            <circle cx="45" cy="34" r="2" fill="var(--teal-dark)"/>
+            <circle cx="60" cy="18" r="2" fill="var(--teal-dark)"/>
+            <circle cx="65" cy="42" r="2" fill="var(--teal-dark)"/>
+            <circle cx="80" cy="26" r="2" fill="var(--teal-dark)"/>
           </svg></span>
-          <span class="name">Authentic Classic</span><span class="go">Start designing &rarr;</span>
+          <span class="name">Authentic Classic</span><span class="cue">Simple, classic crossed laces</span><span class="go">Start designing &rarr;</span>
         </a>
+
       </div>
     </div>
 
