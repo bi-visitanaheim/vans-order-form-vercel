@@ -16,6 +16,11 @@
 // CONFIRMATION_FROM_EMAIL (defaults to Resend's built-in sandbox sender,
 // which works immediately with no domain setup, but reads as "onboarding@
 // resend.dev" — verify your own domain in Resend later for a branded sender).
+//
+// Internal team notification (separate from the guest confirmation) is
+// OFF by default — only sends if INTERNAL_NOTIFY_EMAIL is set. Not needed
+// for a big event like CDX, but useful for one-off submissions so nobody
+// misses an order. Set it to a real address when you want it on.
 
 import { kv } from "@vercel/kv";
 
@@ -80,6 +85,44 @@ async function sendConfirmationEmail(entry) {
   }
 }
 
+async function sendInternalNotification(entry) {
+  if (!process.env.RESEND_API_KEY || !process.env.INTERNAL_NOTIFY_EMAIL) return;
+
+  const fromAddress = process.env.CONFIRMATION_FROM_EMAIL || "onboarding@resend.dev";
+  const html = `
+    <div style="font-family:Arial,sans-serif; color:#125C60; max-width:480px; margin:0 auto;">
+      <p style="font-size:12px; letter-spacing:1px; text-transform:uppercase; color:#43A3A3; font-weight:bold;">New Vans Custom Order Submission</p>
+      <p style="margin:4px 0;"><strong>Client:</strong> ${entry.clientName} &middot; ${entry.clientCompany} &middot; ${entry.clientTitle}</p>
+      <p style="margin:4px 0;"><strong>Ship to:</strong> ${entry.shipFirst} ${entry.shipLast}</p>
+      <p style="margin:4px 0;"><strong>Address:</strong> ${entry.address.line1}${entry.address.line2 ? ", " + entry.address.line2 : ""}, ${entry.address.city}, ${entry.address.state} ${entry.address.zip}</p>
+      <p style="margin:4px 0;"><strong>Email:</strong> ${entry.guestEmail || "Not provided"}</p>
+      <p style="margin:4px 0;"><strong>Shoe:</strong> ${entry.shoeStyle || "Not recorded"}</p>
+      <p style="margin:4px 0;"><strong>Size:</strong> ${entry.shoeSize || "Not recorded"}</p>
+      <p style="margin:4px 0;"><strong>Reference code:</strong> ${entry.id}</p>
+      <p style="margin:12px 0 4px;"><a href="${entry.designUrl}" style="color:#43A3A3;">View exact design &rarr;</a></p>
+      <p style="color:#639393; font-size:13px; margin-top:16px;">This order still needs to be included in a bulk order to Vans. Don't let it get missed.</p>
+    </div>
+  `;
+
+  try {
+    await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${process.env.RESEND_API_KEY}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        from: fromAddress,
+        to: process.env.INTERNAL_NOTIFY_EMAIL,
+        subject: `New order: ${entry.shipFirst} ${entry.shipLast} (${entry.shoeStyle || "style not recorded"})`,
+        html
+      })
+    });
+  } catch (err) {
+    console.error("Internal notification email failed:", err);
+  }
+}
+
 export default async function handler(req, res) {
   if (req.method === "POST") {
     const entry = req.body;
@@ -88,6 +131,7 @@ export default async function handler(req, res) {
     }
     await kv.set(`submission:${entry.id}`, JSON.stringify(entry));
     await sendConfirmationEmail(entry);
+    await sendInternalNotification(entry);
     return res.status(200).json({ ok: true });
   }
 
