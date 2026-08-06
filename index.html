@@ -842,13 +842,13 @@ function buildPacketHtml(list){
     if(!groups[style]) groups[style] = [];
     groups[style].push(e);
   });
-  Object.values(groups).forEach(g => g.sort((a, b) => (a.shoeSize || "").localeCompare(b.shoeSize || "")));
+  Object.values(groups).forEach(g => g.sort((a, b) => (a.shoeSize || "").localeCompare(b.shoeSize || "", undefined, { numeric: true })));
 
   const { styleCounts, sizeCounts } = summarize(list);
   const summaryRows = Object.entries(styleCounts)
     .map(([style, n]) => `<tr><td>${style}</td><td>${n}</td></tr>`).join("");
   const sizeRows = Object.entries(sizeCounts)
-    .sort((a, b) => a[0].localeCompare(b[0]))
+    .sort((a, b) => a[0].localeCompare(b[0], undefined, { numeric: true }))
     .map(([size, n]) => `<tr><td>${size}</td><td>${n}</td></tr>`).join("");
 
   let counter = 0;
