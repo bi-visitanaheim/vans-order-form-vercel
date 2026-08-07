@@ -11,11 +11,13 @@
 // Vercel dashboard -> your project -> Storage tab -> Create Database -> KV
 // -> Connect to Project. Vercel auto-injects the KV_* env vars once connected.
 //
-// Confirmation email requires a Resend account (resend.com, free tier is
-// plenty for this): add RESEND_API_KEY as an environment variable. Optional:
-// CONFIRMATION_FROM_EMAIL (defaults to Resend's built-in sandbox sender,
-// which works immediately with no domain setup, but reads as "onboarding@
-// resend.dev" — verify your own domain in Resend later for a branded sender).
+// Confirmation email requires a SendGrid account (sendgrid.com, free tier
+// is plenty for this): add SENDGRID_API_KEY as an environment variable, and
+// CONFIRMATION_FROM_EMAIL set to a "Single Sender" you've verified in
+// SendGrid (Settings -> Sender Authentication -> Single Sender
+// Verification). This does NOT require DNS access, just clicking a
+// verification link sent to that address — much simpler than full domain
+// authentication, at a small cost to spam-filter deliverability.
 //
 // Internal team notification (separate from the guest confirmation) is
 // OFF by default — only sends if INTERNAL_NOTIFY_EMAIL is set. Not needed
@@ -29,9 +31,10 @@ import { kv } from "@vercel/kv";
 const SITE_URL = "https://vans-order-form-vercel.vercel.app";
 
 async function sendConfirmationEmail(entry) {
-  if (!process.env.RESEND_API_KEY || !entry.guestEmail) return;
+  if (!process.env.SENDGRID_API_KEY || !entry.guestEmail) return;
 
-  const fromAddress = process.env.CONFIRMATION_FROM_EMAIL || "onboarding@resend.dev";
+  const fromAddress = process.env.CONFIRMATION_FROM_EMAIL;
+  if (!fromAddress) return;
   const html = `
     <!--[if mso]>
     <style>h1, .brand-font { font-family: Arial, sans-serif !important; }</style>
@@ -51,33 +54,41 @@ async function sendConfirmationEmail(entry) {
       <p style="text-align:center; font-size:12px; letter-spacing:1px; text-transform:uppercase; color:#43A3A3; font-weight:bold;">Visit Anaheim &times; Vans</p>
       <h1 class="brand-font" style="font-family:'Sharp Sans Display No2',Arial,sans-serif; font-size:24px; margin:0 0 12px; text-align:center;">You're in! Your design is on the list.</h1>
       <p>Hi ${entry.shipFirst || "there"},</p>
-      <p>Your custom Vans design has been received. We're collecting everyone's designs and placing one consolidated order with Vans, so there's nothing more for you to do right now.</p>
+      <p>Thank you for taking the time to design your custom pair of Vans with us. Your design has been received and added to our master order list.</p>
+      <p>We really appreciate you being part of this program. Here's a quick summary of what you submitted:</p>
       <div style="background:#F9F9F2; border:1px solid #B4D9E3; border-radius:4px; padding:16px 20px; margin:20px 0;">
         <p style="margin:0 0 8px; font-size:12px; text-transform:uppercase; letter-spacing:0.5px; color:#43A3A3;">Your Order</p>
         <p style="margin:4px 0;"><strong>Shoe:</strong> ${entry.shoeStyle || "Not recorded"}</p>
         <p style="margin:4px 0;"><strong>Size:</strong> ${entry.shoeSize || "Not recorded"}</p>
         <p style="margin:4px 0;"><strong>Ship to:</strong> ${entry.shipFirst} ${entry.shipLast}</p>
+        <p style="margin:4px 0;"><strong>Address:</strong> ${entry.address.line1}${entry.address.line2 ? ", " + entry.address.line2 : ""}, ${entry.address.city}, ${entry.address.state} ${entry.address.zip}</p>
         <p style="margin:4px 0;"><strong>Reference code:</strong> ${entry.id}</p>
       </div>
-      <p>We'll follow up separately with tracking information once your order has shipped.</p>
-      <p style="color:#639393; font-size:13px;">Noticed a mistake in your order? Reach out to your program coordinator directly.</p>
+      <p>We're collecting everyone's designs and placing one consolidated order with Vans, so there's nothing more for you to do right now. Zelina and her team will be in touch directly once your order has shipped, with tracking information so you know exactly when to expect your kicks.</p>
+      <p>Thanks again for being part of this. We can't wait for you to see the finished pair.</p>
+      <p style="margin-top:24px;">Sincerely,<br>Visit Anaheim</p>
+      <p style="color:#639393; font-size:13px; border-top:1px solid #B4D9E3; padding-top:12px; margin-top:24px;">Questions about your order? Reach out to Zelina Gore at <a href="mailto:zgore@visitanaheim.org" style="color:#43A3A3;">zgore@visitanaheim.org</a>.</p>
     </div>
   `;
 
   try {
-    await fetch("https://api.resend.com/emails", {
+    const res = await fetch("https://api.sendgrid.com/v3/mail/send", {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${process.env.RESEND_API_KEY}`,
+        "Authorization": `Bearer ${process.env.SENDGRID_API_KEY}`,
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        from: fromAddress,
-        to: entry.guestEmail,
+        personalizations: [{ to: [{ email: entry.guestEmail }] }],
+        from: { email: fromAddress },
+        reply_to: { email: "zgore@visitanaheim.org" },
         subject: "Your custom Vans design is on the list!",
-        html
+        content: [{ type: "text/html", value: html }]
       })
     });
+    if (!res.ok) {
+      console.error("Confirmation email failed:", res.status, await res.text());
+    }
   } catch (err) {
     // Swallow the error — a failed email should never affect the guest's
     // saved order or the response they see.
@@ -86,9 +97,9 @@ async function sendConfirmationEmail(entry) {
 }
 
 async function sendInternalNotification(entry) {
-  if (!process.env.RESEND_API_KEY || !process.env.INTERNAL_NOTIFY_EMAIL) return;
+  if (!process.env.SENDGRID_API_KEY || !process.env.INTERNAL_NOTIFY_EMAIL || !process.env.CONFIRMATION_FROM_EMAIL) return;
 
-  const fromAddress = process.env.CONFIRMATION_FROM_EMAIL || "onboarding@resend.dev";
+  const fromAddress = process.env.CONFIRMATION_FROM_EMAIL;
   const html = `
     <div style="font-family:Arial,sans-serif; color:#125C60; max-width:480px; margin:0 auto;">
       <p style="font-size:12px; letter-spacing:1px; text-transform:uppercase; color:#43A3A3; font-weight:bold;">New Vans Custom Order Submission</p>
@@ -105,19 +116,22 @@ async function sendInternalNotification(entry) {
   `;
 
   try {
-    await fetch("https://api.resend.com/emails", {
+    const res = await fetch("https://api.sendgrid.com/v3/mail/send", {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${process.env.RESEND_API_KEY}`,
+        "Authorization": `Bearer ${process.env.SENDGRID_API_KEY}`,
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        from: fromAddress,
-        to: process.env.INTERNAL_NOTIFY_EMAIL,
+        personalizations: [{ to: [{ email: process.env.INTERNAL_NOTIFY_EMAIL }] }],
+        from: { email: fromAddress },
         subject: `New order: ${entry.shipFirst} ${entry.shipLast} (${entry.shoeStyle || "style not recorded"})`,
-        html
+        content: [{ type: "text/html", value: html }]
       })
     });
+    if (!res.ok) {
+      console.error("Internal notification email failed:", res.status, await res.text());
+    }
   } catch (err) {
     console.error("Internal notification email failed:", err);
   }
