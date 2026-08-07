@@ -97,7 +97,15 @@ async function sendConfirmationEmail(entry) {
 }
 
 async function sendInternalNotification(entry) {
-  if (!process.env.SENDGRID_API_KEY || !process.env.INTERNAL_NOTIFY_EMAIL || !process.env.CONFIRMATION_FROM_EMAIL) return;
+  console.log("Internal notification check:", {
+    hasApiKey: !!process.env.SENDGRID_API_KEY,
+    hasNotifyEmail: !!process.env.INTERNAL_NOTIFY_EMAIL,
+    hasFromEmail: !!process.env.CONFIRMATION_FROM_EMAIL
+  });
+  if (!process.env.SENDGRID_API_KEY || !process.env.INTERNAL_NOTIFY_EMAIL || !process.env.CONFIRMATION_FROM_EMAIL) {
+    console.log("Internal notification skipped — one of the three above is false.");
+    return;
+  }
 
   const fromAddress = process.env.CONFIRMATION_FROM_EMAIL;
   const html = `
