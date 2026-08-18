@@ -790,7 +790,7 @@ function renderTable(list){
   }
   const table = document.createElement("table");
   table.className = "master";
-  table.innerHTML = "<thead><tr><th>Ref</th><th>Client</th><th>Ship to</th><th>Email</th><th>Style</th><th>Size</th><th>Design link</th><th>Submitted</th></tr></thead>";
+table.innerHTML = "<thead><tr><th>Ref</th><th>Client</th><th>Ship to</th><th>Email</th><th>Style</th><th>Size</th><th>Design link</th><th>Submitted</th><th>Actions</th></tr></thead>";
   const tbody = document.createElement("tbody");
   list.forEach(e => {
     const tr = document.createElement("tr");
@@ -820,7 +820,23 @@ function renderTable(list){
     tdDesign.appendChild(designLink); tdDesign.appendChild(copyBtn);
 
     const tdDate = document.createElement("td"); tdDate.textContent = new Date(e.submittedAt).toLocaleString();
-    tr.append(tdRef, tdClient, tdShip, tdEmail, tdStyle, tdSize, tdDesign, tdDate);
+    const tdActions = document.createElement("td");
+    const deleteBtn = document.createElement("button");
+    deleteBtn.textContent = "Delete"; deleteBtn.className = "btn"; deleteBtn.style.fontSize = "11px"; deleteBtn.style.padding = "3px 8px"; deleteBtn.style.color = "var(--danger)"; deleteBtn.style.borderColor = "var(--danger)";
+    deleteBtn.addEventListener("click", async () => {
+      if(!confirm("Delete submission " + e.id + "? This can't be undone.")) return;
+      deleteBtn.disabled = true; deleteBtn.textContent = "Deleting...";
+      try{
+        const res = await fetch("/api/submissions?code=" + encodeURIComponent(teamAccessCode) + "&id=" + encodeURIComponent(e.id), { method: "DELETE" });
+        if(!res.ok) throw new Error("Failed (" + res.status + ")");
+        await refreshMasterList(true);
+      }catch(err){
+        deleteBtn.disabled = false; deleteBtn.textContent = "Delete";
+        alert("Couldn't delete this entry: " + err.message);
+      }
+    });
+    tdActions.appendChild(deleteBtn);
+    tr.append(tdRef, tdClient, tdShip, tdEmail, tdStyle, tdSize, tdDesign, tdDate, tdActions);
     tbody.appendChild(tr);
   });
   table.appendChild(tbody);
