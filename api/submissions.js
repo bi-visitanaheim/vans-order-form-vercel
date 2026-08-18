@@ -175,7 +175,19 @@ export default async function handler(req, res) {
     entries.sort((a, b) => new Date(a.submittedAt) - new Date(b.submittedAt));
     return res.status(200).json({ entries });
   }
+  if (req.method === "DELETE") {
+        const code = req.query.code;
+        if (!code || code !== process.env.TEAM_ACCESS_CODE) {
+                return res.status(401).json({ error: "Incorrect access code" });
+        }
+    const id = req.query.id;
+    if (!id) {
+      return res.status(400).json({ error: "Missing id" });
+    }
+    await kv.del(`submission:${id}`);
+    return res.status(200).json({ ok: true });
+  }
 
-  res.setHeader("Allow", ["GET", "POST"]);
-  return res.status(405).json({ error: "Method not allowed" });
+    res.setHeader("Allow", ["GET", "POST", "DELETE"]);
+      return res.status(405).json({ error: "Method not allowed" });
 }
