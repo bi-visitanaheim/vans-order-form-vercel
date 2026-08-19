@@ -488,6 +488,14 @@ const dot4 = document.getElementById("dot4");
 
 let waitingForReturn = false;
 let selectedShoeStyle = "";
+
+  function inferStyleFromUrl(url){
+  if(!url) return "";
+  if(url.includes("slip-on-classic")) return "Slip-On Classic";
+  if(url.includes("old-skool-classic")) return "Old Skool Classic";
+  if(url.includes("authentic-classic")) return "Authentic Classic";
+  return "";
+}
 let openedWindow = null;
 let pollTimer = null;
 
@@ -665,7 +673,7 @@ submitBtn.addEventListener("click", async () => {
     },
     shoeSize: document.getElementById("shoeSize").value.trim(),
     designUrl: designUrlInput.value.trim(),
-    shoeStyle: selectedShoeStyle || "Not recorded"
+    shoeStyle: inferStyleFromUrl(designUrlInput.value.trim()) || selectedShoeStyle || "Not recorded"
   };
 
   submitBtn.disabled = true;
