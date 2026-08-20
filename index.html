@@ -92,13 +92,14 @@
   .btn.primary{background:var(--ink); color:var(--paper);}
   .btn.primary:hover{background:#33302a;}
 
-  input[type=text], input[type=url], textarea, select{
+  input[type=text], input[type=email], input[type=url], textarea, select{
     width:100%; font-family:'IBM Plex Sans', sans-serif; font-size:15px; padding:10px 12px;
     background:var(--paper); border:1px solid var(--line); border-radius:var(--radius); color:var(--ink);
   }
   input:focus{ outline:2px solid var(--teal); outline-offset:1px; }
   label{display:block; font-family:'IBM Plex Mono', monospace; font-size:12px; letter-spacing:0.5px; text-transform:uppercase; color:var(--muted); margin:16px 0 6px;}
   label.first{margin-top:0;}
+  .req{color:var(--red); margin-left:4px; font-weight:700;}
   .two-col{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
   @media (max-width:520px){ .two-col{grid-template-columns:1fr;} }
   .hint{font-size:15px; color:var(--faint); margin-top:4px; font-weight:500;}
@@ -292,9 +293,9 @@
         <div class="icon" id="linkStatusIcon">&hellip;</div>
         <div class="text" id="linkStatusText"><strong>Hanging tight while you create...</strong>Once you're done on Vans, come back here and paste your link below.</div>
       </div>
-      <label class="first" for="designUrl" style="margin-top:16px; font-size:15px;">Paste your design link here</label>
-      <input type="url" id="designUrl" placeholder="Press Cmd+V (or tap and hold to Paste)" style="border:2px solid var(--teal-light); font-size:17px; padding:14px 14px;">
-      <div class="error" id="err-designUrl"></div>
+      <label class="first" for="designUrl" style="margin-top:16px; font-size:15px;">Paste your design link here<span class="req">*</span></label>
+            <input type="url" id="designUrl" placeholder="Press Cmd+V (or tap and hold to Paste)" style="border:2px solid var(--teal-light); font-size:17px; padding:14px 14px;">
+            <div class="error" id="err-designUrl"></div>
     </div>
 
     <div class="step">
@@ -302,18 +303,18 @@
       <h2>Tell Us Where To Ship It!</h2>
       <p>Almost there! Just the boring-but-important stuff so your kicks find you.</p>
 
-      <label class="first" for="clientName">Client name</label>
+      <label class="first" for="clientName">Client name<span class="req">*</span></label>
       <input type="text" id="clientName" autocomplete="name">
       <div class="error" id="err-clientName"></div>
 
       <div class="two-col">
         <div>
-          <label for="clientCompany">Client company</label>
+          <label for="clientCompany">Client company<span class="req">*</span></label>
           <input type="text" id="clientCompany" autocomplete="organization">
           <div class="error" id="err-clientCompany"></div>
         </div>
         <div>
-          <label for="clientTitle">Client title</label>
+          <label for="clientTitle">Client title<span class="req">*</span></label>
           <input type="text" id="clientTitle" autocomplete="organization-title">
           <div class="error" id="err-clientTitle"></div>
         </div>
@@ -321,22 +322,22 @@
 
       <div class="two-col">
         <div>
-          <label for="shipFirst">Shipping first name</label>
+          <label for="shipFirst">Shipping first name<span class="req">*</span></label>
           <input type="text" id="shipFirst" autocomplete="given-name">
           <div class="error" id="err-shipFirst"></div>
         </div>
         <div>
-          <label for="shipLast">Shipping last name</label>
+          <label for="shipLast">Shipping last name<span class="req">*</span></label>
           <input type="text" id="shipLast" autocomplete="family-name">
           <div class="error" id="err-shipLast"></div>
         </div>
       </div>
 
-      <label for="guestEmail">Your email</label>
-      <input type="email" id="guestEmail" autocomplete="email" placeholder="So we can send your confirmation and, later, tracking">
+      <label for="guestEmail" style="font-size:15px; color:var(--ink); font-weight:700;">Your email<span class="req">*</span> <span style="text-transform:none; letter-spacing:0; font-weight:500; color:var(--muted);">(required)</span></label>
+      <input type="email" id="guestEmail" autocomplete="email" placeholder="So we can send your confirmation and, later, tracking" style="border:2px solid var(--teal-light); font-size:17px; padding:14px 14px;">
       <div class="error" id="err-guestEmail"></div>
 
-      <label for="addr1">Shipping address</label>
+      <label for="addr1">Shipping address<span class="req">*</span></label>
       <input type="text" id="addr1" placeholder="Street address" autocomplete="address-line1">
       <div class="error" id="err-addr1"></div>
       <div class="two-col" style="margin-top:10px;">
@@ -348,7 +349,7 @@
         <input type="text" id="zip" placeholder="ZIP code" autocomplete="postal-code">
       </div>
 
-      <label for="shoeSize">Shoe size (US)</label>
+      <label for="shoeSize">Shoe size (US)<span class="req">*</span></label>
       <select id="shoeSize">
         <option value="" disabled selected>Choose a size</option>
         <optgroup label="Men's (US)">
