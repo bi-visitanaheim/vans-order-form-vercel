@@ -33,7 +33,7 @@ const SITE_URL = "https://vans-order-form-vercel.vercel.app";
 async function sendConfirmationEmail(entry) {
   if (!process.env.SENDGRID_API_KEY || !entry.guestEmail) return;
 
-  const fromAddress = process.env.CONFIRMATION_FROM_EMAIL;
+    const fromAddress = process.env.CONFIRMATION_FROM_EMAIL || "events@visitanaheim.org";
   if (!fromAddress) return;
   const html = `
     <!--[if mso]>
@@ -60,10 +60,12 @@ async function sendConfirmationEmail(entry) {
         <p style="margin:0 0 8px; font-size:12px; text-transform:uppercase; letter-spacing:0.5px; color:#43A3A3;">Your Order</p>
         <p style="margin:4px 0;"><strong>Shoe:</strong> ${entry.shoeStyle || "Not recorded"}</p>
         <p style="margin:4px 0;"><strong>Size:</strong> ${entry.shoeSize || "Not recorded"}</p>
+        <p style="margin:4px 0;"><strong>Design:</strong> ${entry.designUrl ? `<a href="${entry.designUrl}" style="color:#43A3A3;">View your design</a>` : "Not recorded"}</p>
         <p style="margin:4px 0;"><strong>Ship to:</strong> ${entry.shipFirst} ${entry.shipLast}</p>
         <p style="margin:4px 0;"><strong>Address:</strong> ${entry.address.line1}${entry.address.line2 ? ", " + entry.address.line2 : ""}, ${entry.address.city}, ${entry.address.state} ${entry.address.zip}</p>
         <p style="margin:4px 0;"><strong>Reference code:</strong> ${entry.id}</p>
       </div>
+      <p><strong>Your customized Vans will arrive within 4 to 6 weeks from submission!</strong></p>
       <p>We're collecting everyone's designs and placing one consolidated order with Vans, so there's nothing more for you to do right now. Zelina and her team will be in touch directly once your order has shipped, with tracking information so you know exactly when to expect your kicks.</p>
       <p>Thanks again for being part of this. We can't wait for you to see the finished pair.</p>
       <p style="margin-top:24px;">Sincerely,<br>Visit Anaheim</p>
