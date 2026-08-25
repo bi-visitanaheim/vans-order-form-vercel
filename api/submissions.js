@@ -33,7 +33,7 @@ const SITE_URL = "https://vans-order-form-vercel.vercel.app";
 async function sendConfirmationEmail(entry) {
   if (!process.env.SENDGRID_API_KEY || !entry.guestEmail) return;
 
-    const fromAddress = process.env.CONFIRMATION_FROM_EMAIL || "events@visitanaheim.org";
+    const fromAddress = "events@visitanaheim.org"; // hardcoded per Visit Anaheim request — do not read from CONFIRMATION_FROM_EMAIL
   if (!fromAddress) return;
   const html = `
     <!--[if mso]>
